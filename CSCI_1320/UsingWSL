@@ -1,0 +1,5 @@
+Navigating with WSL
+1. Mount C with: cd /mnt/c/
+2. navigate to CSCI_1320: cd Users/Brian/Documents/School/CSCI_1320/
+3. Compile with: g++ SOURCE.cpp -o EXCNAME
+4. Run with: ./EXCNAME

@@ -1,0 +1,20 @@
+Debugging Practice.
+1. calculatorBuggy.cpp
+  The problem is that the variable type being 'int' forces division to truncate the value.
+  A simple solution is on line 6 change 'int' to 'double'
+2. circleAreaBuggy.cpp
+  This fails to compile with a vary long error message.
+  There are 2 problems First It Uses an undeclared variable 'area' on line 16
+  Second on line 14 it try's to write to a constant.
+  To fix this remove 'const' from line 11.
+3. freeFallBuggy.cpp
+  The variable t is declared as a constant- remove 'const' from line 14
+  The code never ask for the user input- add 'cin >> t;' after line 16
+  Multiplies by zero while calculating- when calculating d '1/2' must be cast to double, use '1/2.0'
+4.helloWorldBuggy.cpp
+  fails to compile- this is because std is not included in the cout statement.
+  to fix this add 'using namespace std;' and on the 'return 0' line 8 add ';'
+5.powersBuggy.cpp
+  Problem 1: add '#include<cmath>' to the global area.
+  Problem 2: 'cin << x;' should be 'cin >> x;'
+  Problem 3: change '++a' to 'a++' to use post increments

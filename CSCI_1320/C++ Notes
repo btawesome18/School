@@ -1,0 +1,44 @@
+#include <iostream>
+using namespace std;
+
+//Comments
+
+int main(){
+
+
+
+
+
+return 0;
+}
+
+
+relational expressions.
+==
+!=
+
+var types
+{
+  int
+  double
+  char
+  bool
+  float
+  void
+  wchar_t
+}
+
+
+
+functions {
+
+  functions only have 1 return
+
+  function declaration is at top
+  int myFunction( int a);
+
+  function definition
+  int myFunction( int a){
+  return int;
+  }
+}
