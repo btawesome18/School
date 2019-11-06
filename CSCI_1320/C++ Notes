@@ -28,6 +28,7 @@ var types
   wchar_t
 }
 
+With rand include <cstdlib>
 
 
 functions {
@@ -39,6 +40,19 @@ functions {
 
   function definition
   int myFunction( int a){
-  return int;
-  }
+    return int;}
+
+  can have void functions
+
+}
+
+Address space{
+  can find variables Address
+  use & to find address
+  0x ~ hexadecimal 0-15
+  pass by reference parameter
+  call by reference
+    void foo( int &x );
+    & makes it pass address instead of var value.
+  caller's data can be modified now the function can use main scope variables.
 }
