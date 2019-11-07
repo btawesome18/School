@@ -20,7 +20,7 @@ int main(){
   int Max;
   bool winner;
 
-  srand(time(null));// seed the random number generator
+  srand(time(0));// seed the random number generator
 
   cout << "Set max score: " << endl;
   cin >> Max;
@@ -66,6 +66,13 @@ int oneTurn( bool turn){
 }
 
 bool loopGame( int maxScore){
+  int scoreBot=0, scoreHum=0;
+
+  do {
+
+    scoreBot++;
+    cout << scoreBot;
+  } while();
   // use a dowhile loops
   // alternate between human and computer as the use using i++ % 2 == 0 in an ife statment
   // save scoreHum, and scoreBot from oneTurn()

@@ -49,7 +49,7 @@ int oneTurn( bool turn){
     dice = roll();
     // loop tell they hold or roll a 3
     if (dice == 3) {
-      /* return 3; */
+      /* return -3; */
     } else {
       /* sum = sum + dice; */
     }
@@ -66,6 +66,7 @@ int oneTurn( bool turn){
 bool loopGame( int maxScore){
   // use a dowhile loops
   // alternate between human and computer as the use using i++ % 2 == 0 in an ife statment
+  // if oneTurn() returns -3 then give oppent 3 and subtract 3 points
   // save scoreHum, and scoreBot from oneTurn()
   // return 0 for human victory, and 1 for robot domination test every loop using if or satemets.
   return 1;
