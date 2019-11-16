@@ -1,5 +1,7 @@
 #include <iostream>
 #include <string>
+#include <cstdlib>
+#include <ctime>
 
 using namespace std;
 
@@ -7,13 +9,27 @@ int menu();
 
 int newAccount(string name[], string pass[], int balance[], int counter, int total);
 
+void deposit(int money[], string pass, int index);
+
+void withdraw(int money[], string pass, int index);
+
+int gamblingIdx();
+
+int swapValues(int money[], int gambler[], int userI);
+
 int main(){
-  int counter = 0, total = 100, balance[100];
+  const int total = 100;
+  int counter = 0, balance[100];
   int test = 0;
   string name[total], pass[total];
 
 //  cout << menu();
-//  test = newAccount()
+  counter = newAccount(name, pass, balance, counter, total);
+
+  std::cout << counter << '\n';
+  std::cout << balance[0] << '\n';
+  std::cout << name[0] << '\n';
+  std::cout << pass[0] << '\n';
 //s1.compare(s2) == 0 to compare strings
   return 0;
 }
@@ -51,4 +67,46 @@ int newAccount(string name[], string pass[], int balance[], int counter, int tot
 
 
 
+}
+
+void deposit(int money[], string pass, int index){
+  string temp = "";
+
+  std::cout << "Enter your Password: " << '\n';
+  std::cin >> temp;
+  if (temp.compare(pass) == 0) {
+    std::cout << "Deposit amount: " << '\n';
+    std::cin >> money[index];
+  } else {
+    std::cout << "Wrong Password!" << '\n';
+  }
+}
+
+void withdraw(int money[], string pass, int index){
+  string temp = "";
+  int draw;
+
+  std::cout << "Enter your Password: " << '\n';
+  std::cin >> temp;
+  if (temp.compare(pass) == 0) {
+    std::cout << "Deposit amount: " << '\n';
+    std::cin >> draw;
+    money[index] = money[index]-draw;
+  } else {
+    std::cout << "Wrong Password!" << '\n';
+  }
+}
+
+int gamblingIdx(){
+  srand(time(0));
+  return (rand()%10);
+}
+
+int swapValues(int money[], int gambler[], int userI){
+  int gambleIndex = gamblingIdx();
+  int temp = 0;
+  temp = gambler[gambleIndex];
+  gambler[gambleIndex] = money[userI];
+  money[userI] = temp;
+  return temp;
 }
