@@ -62,5 +62,27 @@ Address space{
 Arrays{
   Pass by reference default
   passes address of first value
+
+}
+
+String{
+  string is a class
+  declaration is called insancheating.
+  can index into string to get char
+
+}
+
+FileIO{
+  #include<fstream>
+  first declare ifstream
+  ifstream inputStream;
+  connect to a file in the current directory.
+  inputStream.open("filename.txt");
+  channel stream same as cin/cout >>, <<
+  end with inputStream.close();
+  getline() to set custom delimiters.
+}
+
+Structs{
   
 }
