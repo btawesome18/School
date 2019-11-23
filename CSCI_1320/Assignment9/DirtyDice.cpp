@@ -37,45 +37,89 @@ int main(){
 }
 
 int roll(){
+  int temp = ((rand()%6)+1);
+  cout << "Rolled " << temp << endl;
   // random number 1-6
   // will use dummy value of 4
-  return ((rand()%6)+1);
+  return temp;
 }
 
 int oneTurn( bool turn){
-  int sum = 0, dice;
-  if (turn) {
-    //do while
-    /* ask user to roll or hold */
-    //call dice
-    dice = roll();
-    // loop tell they hold or roll a 3
-    if (dice == 3) {
-      /* return 3; */
-    } else {
-      /* sum = sum + dice; */
-    }
-    //sum points to sum
-  } else {
-    // do while
-    /* have the computer randomnly roll or hold */
-    //save points to sum
+  int turns = 0, thresh = 0,rolls = 0, dice;
+  bool hold;
+  if(turn){
+    do{
+
+      cout << "Roll or hold(1 roll, 0 hold)" <<endl;
+      cin >> hold;
+      dice = roll();
+      turns = turns + dice;
+      rolls++;
+      if(dice == 3){
+        hold = 0;
+        turns = -3;
+      }
+
+    }while(hold);
+    cout << "This round: " << turns << " points and " << rolls << " rolls" << endl;
+    return turns;
+  }else{
+    do{
+       if(thresh > 2){
+         hold = rand()%2;
+         if (hold) {
+           cout << "Bot: Roll " <<endl;
+         } else {
+           cout << "Bot: Hold " <<endl;
+         }
+       }else{
+         hold = 1;
+         thresh++;
+         cout << "Bot: Roll " <<endl;
+       }
+
+      dice = roll();
+      rolls++;
+      turns = turns + dice;
+      if(dice == 3){
+        hold = 0;
+        turns = -3;
+      }
+    }while(hold);
+    cout << "(Bot)This round: " << turns << " points and " << rolls << " rolls" << endl;
+    return turns;
   }
-  sum = 4; // dummy value
-  return sum;
 }
 
 bool loopGame( int maxScore){
-  int scoreBot=0, scoreHum=0;
+  int scoreBot=100, scoreHum=100,counter=0, temp = 0;
 
   do {
-
-    scoreBot++;
-    cout << scoreBot;
-  } while();
+    if (counter++%2 == 0) {
+      temp = oneTurn(1);
+      if (temp == -3) {
+        scoreBot = scoreBot + 3;
+      }
+      scoreHum = scoreHum + temp;
+    } else {
+      temp = oneTurn(0);
+      if (temp == -3) {
+        scoreHum = scoreHum + 3;
+      }
+      scoreBot = scoreBot + temp;
+    }
+cout << "Bot Score: " << scoreBot << endl;
+cout << "Your Score: " << scoreHum << endl;
+  } while((scoreBot < maxScore)&&(scoreHum < maxScore));
+  cout << "Bot Score: " << scoreBot << endl;
+  cout << "Your Score: " << scoreHum << endl;
   // use a dowhile loops
   // alternate between human and computer as the use using i++ % 2 == 0 in an ife statment
   // save scoreHum, and scoreBot from oneTurn()
   // return 0 for human victory, and 1 for robot domination test every loop using if or satemets.
-  return 1;
+  if (scoreBot > scoreHum) {
+    return 1;
+  } else {
+    return 0;
+  }
 }
