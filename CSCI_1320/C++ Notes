@@ -81,8 +81,21 @@ FileIO{
   channel stream same as cin/cout >>, <<
   end with inputStream.close();
   getline() to set custom delimiters.
+
+  Failsafe for missing files,
+  if(!inStream.is_open()){
+    exit(-1);
+  }
 }
 
 Structs{
-  
+  defined With
+  struct StruName{
+  bool sex;
+  bool neutered;
+  };
+  just list variable definition
+  define like normal variable
+  StruName person__0;
+  person__1.sex = true;
 }
