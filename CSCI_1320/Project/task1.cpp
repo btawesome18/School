@@ -3,9 +3,19 @@
 #include <ctime>
 #include <cmath>
 #include <cstdlib>
+#include <fstream>
 
 
 using namespace std;
+
+struct genSummery{
+  double fitness;
+  string text;
+};
+
+genSummery runGeneration(string population[], int populationSize, string target, int mutationRate);
+
+void causeMutation(string population[], int populationSize, double mutationRate);
 
 string breed(string parent1, string parent2, bool method);
 
@@ -15,7 +25,7 @@ double sumArryD(double arry[], int arrySize);
 
 char randLetter();
 
-void calculateFitness(string target, string population[], double fitness[], int size, int length);
+int calculateFitness(string target, string population[], double fitness[], int size, int length);
 
 int compareString(string test, string sample);
 
@@ -27,24 +37,26 @@ int main(){
   srand(time(0));
   int populationSize = 200;
   string population[populationSize];
-  double fitness[populationSize];
-  int parentsIndex[populationSize];
-  buildPopulation(population, populationSize, 100);
+  string Target = "May your mountans rise";
+  genSummery Current;
+  int genCount = 0;
 
-  for (int i = 0; i < 200; i++) {
-    std::cout << population[i] << '\n';
-  }
+  ofstream myfile;
+  myfile.open ("output.csv");
+  myfile << "This is the first cell in the first column.\n";
+  myfile << "a,b,c,\n";
+  myfile << "c,s,v,\n";
+  myfile << "1,2,3.456\n";
+  myfile << "semi;colon";
 
-  calculateFitness("Hello DudeHello DudeHello DudeHello DudeHello DudeHello DudeHello DudeHello DudeHello DudeHello Dude", population, fitness, populationSize, 100);
+  buildPopulation(population, populationSize, Target.length());
 
-  for (int i = 0; i < 200; i++) {
-    std::cout << fitness[i] << '\n';
-  }
+  while ((Current.fitness < 1)&&(genCount < 20000)) {
+    genCount++;
+    Current = runGeneration(population, populationSize, Target, 4);
 
-  buildMatingPool(fitness, parentsIndex, populationSize, 10000);
-
-  for (int i = 0; i < populationSize; i++) {
-    std::cout << parentsIndex[i] << '\n';
+    cout << "Gen: " << genCount <<" Fitness " << Current.fitness  <<" Text: " << Current.text << '\n';
+    myfile << Current.fitness << "," << genCount << "\n";
   }
 
   return 0;
@@ -67,13 +79,20 @@ char randLetter(){
   return alph[temp];
 }
 
-void calculateFitness(string target, string population[], double fitness[], int size, int length){
+int calculateFitness(string target, string population[], double fitness[], int size, int length){
   int fitInt[size];
+  int champInx = 0;
+  int champFit = 0;
   for (int i = 0; i < size; i++) {
     fitInt[i] = compareString(target, population[i]);
+    if( fitInt[i] > champFit){
+      champFit = fitInt[i];
+      champInx = i;
+    }
   }
 
   makePercent(fitness, fitInt, length, size);
+  return champInx;
 }
 
 int compareString(string test, string sample){
@@ -125,7 +144,7 @@ double sumArryD(double arry[], int arrySize){
 string breed(string parent1, string parent2, bool method){
   int stringLenght = parent1.length();
   string child ="";
-  int randomNum =0;
+  int randomNum = 0;
 
   if(method){
     for (int i = 0; i < stringLenght; i++) {
@@ -146,6 +165,43 @@ string breed(string parent1, string parent2, bool method){
       }
     }
   }
+  return child;
 }
 
-void causeMutation(string population[], int populationSize, double mutationRate){}
+void causeMutation(string population[], int populationSize, double mutationRate){
+  string temp = "";
+  for (int i = 0; i < populationSize; i++) {
+    temp = population[i];
+    for (int j = 0; j < temp.length(); j++) {
+      if(round(mutationRate*10) >= (rand()%1000)){
+        temp[j] = randLetter();
+      }
+      population[i] = temp;
+    }
+  }
+}
+
+genSummery runGeneration(string population[], int populationSize, string target, int mutationRate){
+  int parentsIndex1[populationSize], parentsIndex2[populationSize];
+  double fitness[populationSize];
+  genSummery Champ;
+  int champIndex;
+
+  champIndex = calculateFitness(target, population, fitness, populationSize, target.length());
+
+  Champ.fitness = fitness[champIndex];
+  Champ.text = population[champIndex];
+
+  buildMatingPool(fitness, parentsIndex1, populationSize, 10000);
+  buildMatingPool(fitness, parentsIndex2, populationSize, 10000);
+
+  for (int i = 0; i < populationSize; i++) {
+    population[i] = breed(population[parentsIndex1[i]], population[parentsIndex2[i]], 1);
+  }
+
+  causeMutation(population, populationSize, 4);
+
+
+
+  return Champ;
+}
