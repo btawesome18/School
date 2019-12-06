@@ -11,7 +11,10 @@ using namespace std;
 struct genSummery{
   double fitness;
   string text;
+  double aveFit;
 };
+
+double calcAve(double fitness[], int size);
 
 genSummery runGeneration(string population[], int populationSize, string target, int mutationRate);
 
@@ -37,26 +40,20 @@ int main(){
   srand(time(0));
   int populationSize = 200;
   string population[populationSize];
-  string Target = "May your mountans rise";
+  string Target = "May your mountains rise";
   genSummery Current;
   int genCount = 0;
 
   ofstream myfile;
-  myfile.open ("output.csv");
-  myfile << "This is the first cell in the first column.\n";
-  myfile << "a,b,c,\n";
-  myfile << "c,s,v,\n";
-  myfile << "1,2,3.456\n";
-  myfile << "semi;colon";
 
   buildPopulation(population, populationSize, Target.length());
 
-  while ((Current.fitness < 1)&&(genCount < 20000)) {
+  while ((Current.fitness < 1)&&(genCount < 50000)) {
     genCount++;
     Current = runGeneration(population, populationSize, Target, 4);
 
-    cout << "Gen: " << genCount <<" Fitness " << Current.fitness  <<" Text: " << Current.text << '\n';
-    myfile << Current.fitness << "," << genCount << "\n";
+    cout << "Gen: " << genCount << " AveFit: " << Current.aveFit <<" Fitness Max: " << Current.fitness  <<" Text: " << Current.text << '\n';
+    myfile << Current.fitness << "," << Current.aveFit << "," << genCount << "\n";
   }
 
   return 0;
@@ -186,22 +183,45 @@ genSummery runGeneration(string population[], int populationSize, string target,
   double fitness[populationSize];
   genSummery Champ;
   int champIndex;
+  string children[populationSize];
 
   champIndex = calculateFitness(target, population, fitness, populationSize, target.length());
 
   Champ.fitness = fitness[champIndex];
   Champ.text = population[champIndex];
-
+  Champ.aveFit = calcAve(fitness,populationSize);
   buildMatingPool(fitness, parentsIndex1, populationSize, 10000);
   buildMatingPool(fitness, parentsIndex2, populationSize, 10000);
 
+  int parentTempA, parentTempB;
   for (int i = 0; i < populationSize; i++) {
-    population[i] = breed(population[parentsIndex1[i]], population[parentsIndex2[i]], 1);
+    parentTempA = parentsIndex1[i];
+    parentTempB = parentsIndex2[i];
+    while(parentTempB == parentTempA){
+      parentTempB = rand()%populationSize;
+      parentTempA = rand()%populationSize;
+    }
+    children[i] = breed(population[parentTempA], population[parentTempB], 0);
+
   }
 
-  causeMutation(population, populationSize, 4);
 
+  causeMutation(children, populationSize, 4);
 
+  children[0] = Champ.text;
+
+  for (int i = 0; i < populationSize; i++) {
+    population[i] = children[i];
+  }
 
   return Champ;
+}
+
+
+double calcAve(double fitness[], int size){
+  double total = 0;
+  for (int i = 0; i < size; i++) {
+    total = total + fitness[i];
+  }
+  return (total/size);
 }

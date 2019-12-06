@@ -99,3 +99,7 @@ Structs{
   StruName person__0;
   person__1.sex = true;
 }
+
+Classes{
+  
+}
