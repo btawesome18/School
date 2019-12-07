@@ -16,7 +16,7 @@ struct genSummery{
 
 double calcAve(double fitness[], int size);
 
-genSummery runGeneration(string population[], int populationSize, string target, int mutationRate);
+genSummery runGeneration(string population[], int populationSize, string target, int mutationRate, double fitness[]);
 
 void causeMutation(string population[], int populationSize, double mutationRate);
 
@@ -43,19 +43,28 @@ int main(){
   string Target = "May your mountains rise";
   genSummery Current;
   int genCount = 0;
-
+  string fileName = "output.csv";
+  double fitnessPer[populationSize];
   ofstream myfile;
+
+  myfile.open(fileName);
 
   buildPopulation(population, populationSize, Target.length());
 
   while ((Current.fitness < 1)&&(genCount < 50000)) {
     genCount++;
-    Current = runGeneration(population, populationSize, Target, 4);
+    Current = runGeneration(population, populationSize, Target, 4, fitnessPer);
 
-    cout << "Gen: " << genCount << " AveFit: " << Current.aveFit <<" Fitness Max: " << Current.fitness  <<" Text: " << Current.text << '\n';
-    myfile << Current.fitness << "," << Current.aveFit << "," << genCount << "\n";
+    cout << "Gen: " << genCount <<" Fitness Max: " << Current.fitness  <<" Text: " << Current.text << '\n';
+    myfile << genCount << "," << Current.fitness <<   ",";
+    for (int i = 0; i < populationSize; i++) {
+      myfile << fitnessPer[i] << ",";
+    }
+    myfile << "\n";
   }
 
+
+  myfile.close();
   return 0;
 }
 
@@ -178,9 +187,9 @@ void causeMutation(string population[], int populationSize, double mutationRate)
   }
 }
 
-genSummery runGeneration(string population[], int populationSize, string target, int mutationRate){
+genSummery runGeneration(string population[], int populationSize, string target, int mutationRate, double fitness[]){
   int parentsIndex1[populationSize], parentsIndex2[populationSize];
-  double fitness[populationSize];
+
   genSummery Champ;
   int champIndex;
   string children[populationSize];
@@ -189,7 +198,7 @@ genSummery runGeneration(string population[], int populationSize, string target,
 
   Champ.fitness = fitness[champIndex];
   Champ.text = population[champIndex];
-  Champ.aveFit = calcAve(fitness,populationSize);
+  //Champ.aveFit = calcAve(fitness,populationSize);  They want this done in matlab.
   buildMatingPool(fitness, parentsIndex1, populationSize, 10000);
   buildMatingPool(fitness, parentsIndex2, populationSize, 10000);
 
