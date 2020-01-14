@@ -1,0 +1,12 @@
+Base Execution Time of 1.64156, and 3809.89 generations Using Midpoint Breeding, Keep Champ
+Base Execution Time of 0.82375, and 2395 generations Using Random Point Breeding, Keep Champ
+Increased phrase length by 7, Ave execution time: 19.8208, GenAverage: 49109.8 Random Point Breeding, Keep Champ
+Increased population size to 400, Ave execution time: 1.05234 GenAverage: 1163.1, Random Point Breeding, Keep Champ
+Reduced Population size to 100, Ave execution time: 0.681875 GenAverage: 4711.84, Random Point Breeding, Keep Champ
+Increased possible letters by adding numbers, Ave execution time: 1.03781 GenAverage: 3029.97, Random Point Breeding, Keep Champ
+Increased mating factor, Ave execution time: 0.915781 GenAverage: 2653.26, Random Point Breeding, Keep Champ
+Increased Mutation rate to 5, Ave execution time: 0.830781 GenAverage: 2407.95, Random Point Breeding, Keep Champ
+Increased Mutation rate to 10, Ave execution time: 0.805781 GenAverage: 2331.95, Random Point Breeding, Keep Champ
+Decreased Mutation rate to 2, Ave execution time: 0.850938 GenAverage: 2472.86, Random Point Breeding, Keep Champ
+A function that takes much more time then it needs to is the calculate fitness function.
+Using Squared fitness has a major impact, Ave execution time: 0.1325 GenAverage: 417.18, Random Point Breeding, Keep Champ

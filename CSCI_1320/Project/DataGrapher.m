@@ -7,7 +7,7 @@ AllCell = T(:,(3:(width(T)-1)));
 All = table2array(AllCell);
 GenAve = (sum(All, 2)/(width(T)-3));
 plot(Gen, GenAve, Gen, Max)
-title("Genetic Mutation: Fitness Vs Generations")
+title("Fitness Vs Generations")
 xlabel("Generations")
 ylabel("Fitness")
 legend("Average","Max")

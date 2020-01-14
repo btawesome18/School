@@ -4,6 +4,7 @@
 #include <cmath>
 #include <cstdlib>
 #include <fstream>
+//#include<time.h>
 
 
 using namespace std;
@@ -47,24 +48,46 @@ int main(){
   double fitnessPer[populationSize];
   ofstream myfile;
 
-  myfile.open(fileName);
+  int startTime, endTime;
+  double execTime;
+  int genTotal = 0;
+  //myfile.open("time.csv");
 
-  buildPopulation(population, populationSize, Target.length());
+  startTime = clock();
 
-  while ((Current.fitness < 1)&&(genCount < 50000)) {
-    genCount++;
-    Current = runGeneration(population, populationSize, Target, 4, fitnessPer);
+  for (int d = 0; d < 100; d++) {
+    fileName = "output" + to_string(d) + ".csv";
 
-    cout << "Gen: " << genCount <<" Fitness Max: " << Current.fitness  <<" Text: " << Current.text << '\n';
-    myfile << genCount << "," << Current.fitness <<   ",";
-    for (int i = 0; i < populationSize; i++) {
-      myfile << fitnessPer[i] << ",";
+    Current.fitness = 0;
+    myfile.open(fileName);
+    genCount = 0;
+
+    buildPopulation(population, populationSize, Target.length());
+
+    while ((Current.fitness < 1)&&(genCount < 100000)) {
+      genCount++;
+      Current = runGeneration(population, populationSize, Target, 2, fitnessPer);
+      /*
+      cout << "Gen: " << genCount <<" Fitness Max: " << Current.fitness  <<" Text: " << Current.text << '\n';
+      myfile << genCount << "," << Current.fitness <<   ",";
+      for (int i = 0; i < populationSize; i++) {
+        myfile << fitnessPer[i] << ",";
+      }
+      myfile << "\n";
+      */
     }
-    myfile << "\n";
+    //endTime = clock();
+    //execTime = (double)(endTime-startTime)/CLOCKS_PER_SEC;
+    cout << "Iter: " << d  << " " << genCount << endl;
+    genTotal = genTotal + genCount;
+  //  myfile << execTime << ",";
+    //myfile.close();
   }
+  //  myfile.close();
+  endTime = clock();
+  execTime = (double)(endTime-startTime)/CLOCKS_PER_SEC;
+  cout << "Ave execution time: " << execTime/100 << " GenAverage: " << genTotal/100.0 <<endl;
 
-
-  myfile.close();
   return 0;
 }
 
@@ -81,7 +104,7 @@ void buildPopulation(string poulation[], int size, int targetLenght){
 
 char randLetter(){
   int temp = (rand()%53);
-  char alph[] = {" abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"};
+  char alph[] = {" abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"};
   return alph[temp];
 }
 
@@ -120,7 +143,11 @@ void makePercent(double fitnessPer[], int fitnessInt[], int length, int size){
 }
 
 void buildMatingPool(double fitnessPer[], int parents[], int arrySize, int factor){
-  double weight = sumArryD(fitnessPer, arrySize);
+  double squareFit[arrySize];
+  for (int i = 0; i < arrySize; i++) {
+    squareFit[i] = fitnessPer[i]*fitnessPer[i];
+  }
+  double weight = sumArryD(squareFit, arrySize);
   double randValue = 0;
   double testSum = 0;
   int counter = -1;
@@ -129,7 +156,7 @@ void buildMatingPool(double fitnessPer[], int parents[], int arrySize, int facto
     randValue = (rand()%int(round(weight*factor)))/factor;
     while (testSum <= randValue) {
       counter++;
-      testSum = testSum + fitnessPer[counter];
+      testSum = testSum + squareFit[counter];
     }
     parents[i] = counter;
     counter = -1;
@@ -149,24 +176,23 @@ double sumArryD(double arry[], int arrySize){
 
 string breed(string parent1, string parent2, bool method){
   int stringLenght = parent1.length();
-  string child ="";
+  string child = parent1;
   int randomNum = 0;
 
-  if(method){
+  if(method == 0){
     for (int i = 0; i < stringLenght; i++) {
       randomNum = (rand()%2);
       if (randomNum == 0) {
-        child = child + parent1[i];
-      } else {
-        child = child + parent2[i];
+        child[i] =  parent2[i];
       }
     }
   }else{
-    randomNum = rand()%stringLenght;
+    randomNum = (rand()%stringLenght);
+    child = "";
     for (int i = 0; i < stringLenght; i++) {
-      if (i <= randomNum) {
+      if(i <= randomNum){
         child = child + parent1[i];
-      } else {
+      }else{
         child = child + parent2[i];
       }
     }
@@ -198,7 +224,7 @@ genSummery runGeneration(string population[], int populationSize, string target,
 
   Champ.fitness = fitness[champIndex];
   Champ.text = population[champIndex];
-  //Champ.aveFit = calcAve(fitness,populationSize);  They want this done in matlab.
+  Champ.aveFit = calcAve(fitness,populationSize); // They want this done in matlab.
   buildMatingPool(fitness, parentsIndex1, populationSize, 10000);
   buildMatingPool(fitness, parentsIndex2, populationSize, 10000);
 
@@ -210,7 +236,7 @@ genSummery runGeneration(string population[], int populationSize, string target,
       parentTempB = rand()%populationSize;
       parentTempA = rand()%populationSize;
     }
-    children[i] = breed(population[parentTempA], population[parentTempB], 0);
+    children[i] = breed(population[parentTempA], population[parentTempB], 0); //1 for midpoint, 0 for random
 
   }
 

@@ -149,24 +149,23 @@ double sumArryD(double arry[], int arrySize){
 
 string breed(string parent1, string parent2, bool method){
   int stringLenght = parent1.length();
-  string child ="";
+  string child = parent1;
   int randomNum = 0;
 
-  if(method){
+  if(method == 0){
     for (int i = 0; i < stringLenght; i++) {
       randomNum = (rand()%2);
       if (randomNum == 0) {
-        child = child + parent1[i];
-      } else {
-        child = child + parent2[i];
+        child[i] =  parent2[i];
       }
     }
   }else{
-    randomNum = rand()%stringLenght;
+    randomNum = (rand()%stringLenght);
+    child = "";
     for (int i = 0; i < stringLenght; i++) {
-      if (i <= randomNum) {
+      if(i <= randomNum){
         child = child + parent1[i];
-      } else {
+      }else{
         child = child + parent2[i];
       }
     }
@@ -225,7 +224,6 @@ genSummery runGeneration(string population[], int populationSize, string target,
 
   return Champ;
 }
-
 
 double calcAve(double fitness[], int size){
   double total = 0;
