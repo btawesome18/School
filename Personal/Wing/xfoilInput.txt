@@ -1,0 +1,13 @@
+PLOP 
+G 
+
+Naca 2212
+Oper 
+Visc 
+200000
+Mach 0.05
+ITER 200
+Pacc 
+NACA2212Pol
+
+ASeq  -2 10 .5
