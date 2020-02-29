@@ -248,6 +248,7 @@ void CountryNetwork:: readjustNetwork(int start_index, int end_index)
       }
       temp = temp->next;
     }
+
     node2 = temp;
     temp = node2->next;
     node2->next = NULL;
