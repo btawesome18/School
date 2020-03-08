@@ -36,13 +36,37 @@ int main()
 {
   // TODO - Declare a stack to hold the operands
   string input;
-
+  RPNCalculator *stack = new RPNCalculator();
   cout << "Enter the operators and operands ('+', '*') in a postfix format" << endl;
 
   while(true)
   {
     cout << "#> ";
     getline(cin, input);
+    while ((input != "=")) {
+
+      if (isNumber(input)) {
+        stack->push(stof(input));
+      }
+      if (input=="+") {
+        stack->compute(input);
+      }
+      if (input=="*") {
+        stack->compute(input);
+      }
+      cout << "#> ";
+      getline(cin, input);
+    //  std::cout << "test" << '\n';
+
+    }
+
+    if (stack->isEmpty()) {
+      std::cout << "No operands: Nothing to evaluate" << '\n';
+    } else if (stack->peek()->next!=NULL) {
+      std::cout << "Invalid expression" << '\n';
+    } else{
+      std::cout << stack->peek()->number << '\n';
+    }
     /* TODO
        1. Read input (operators and operands) until you encounter a "="
        2. Use the isNumber function to check if the input is an operand
@@ -50,7 +74,7 @@ int main()
        4. If input is not an operand, call the compute function to evaluate
           the partial expression
     */
-
+    return 0;
   }
 
   /* TODO - If the stack is empty then print "No operands: Nothing to evaluate" */
