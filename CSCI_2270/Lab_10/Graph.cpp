@@ -94,6 +94,15 @@ int Graph::findShortestPath(int src, int dest){
         // go to all the adjacent vertices of n
         for( int x = 0; x < n->adj.size(); x++ )
         {
+          if (!n->adj[x].v->visited) {
+            n->adj[x].v->visited= true;
+            q.push(n->adj[x].v);
+            n->adj[x].v->distance = n->distance++;
+          }
+          if (n->adj[x].v->key == dest) {
+            return n->adj[x].v->distance;
+          }
+
             // If a adjacent has not been visited, then mark it visited and enqueue it
             // Update the distance of the adjacent vertices along the way
             // Stop when you reach the destination vertex and return the needful

@@ -10,9 +10,35 @@ MovieTree::MovieTree()
 	root = NULL;
 }
 
-MovieTree::~MovieTree()
-{
+TreeNode* ChainSaw(TreeNode *root);
 
+void delinker(LLMovieNode *head);
+
+void delinker(LLMovieNode *head){
+	LLMovieNode *temp = head;
+	while (head!=NULL) {
+		temp = head;
+		head = head->next;
+		delete temp;
+	}
+}
+
+TreeNode* ChainSaw(TreeNode *root){
+	if (root==NULL) {
+		return NULL;
+	}
+
+	root->rightChild = ChainSaw(root->rightChild);
+	root->leftChild = ChainSaw(root->leftChild);
+	if (root->leftChild == NULL&& root->rightChild == NULL) {
+		delinker(root->head);
+		delete root;
+		return NULL;
+	}
+}
+
+MovieTree::~MovieTree(){
+	root = ChainSaw(root);
 }
 
 void printLLHelp(LLMovieNode* head);
@@ -91,7 +117,7 @@ void add2Tree(TreeNode *root, TreeNode *Leaf){
 void MovieTree::addMovie(int ranking, string title, int year, float rating){
 	char key = title[0];
 
-	TreeNode *Treespot = searchCharHelper(root, key);
+	TreeNode *Treespot = MovieTree::searchChar(key);
 
 	LLMovieNode *added = new LLMovieNode;
 	added->ranking = ranking;
@@ -111,10 +137,52 @@ void MovieTree::addMovie(int ranking, string title, int year, float rating){
 		root = newLeaf;
 	}else
 	worthless(Treespot, added);
-
 }
 
+TreeNode* deleteHelper(TreeNode *root, char key);
 
+TreeNode* minValueNode(TreeNode *root);
+
+TreeNode* minValueNode(TreeNode *root){
+	while (root->leftChild!=NULL) {
+		root = root->leftChild;
+	}
+	return root;
+}
+
+TreeNode* deleteHelper(TreeNode *root, char key){
+	if (root == NULL) {
+		return root;
+	}
+	if (key < root->titleChar) {
+		root->leftChild = deleteHelper(root->leftChild, key);
+	} else if (key > root->titleChar) {
+		root->rightChild = deleteHelper(root->rightChild, key);
+	} else {
+		if (root->leftChild==NULL&&root->rightChild==NULL) {
+			delete root;
+			return NULL;
+		}
+		if (root->leftChild==NULL) {
+			TreeNode *temp = root->rightChild;
+			temp->parent = root->parent;
+			delete root;
+			return temp;
+		} else if (root->rightChild==NULL) {
+			TreeNode *temp = root->leftChild;
+			temp->parent = root->parent;
+			delete root;
+			return temp;
+		}
+
+		TreeNode *temp = minValueNode(root->rightChild);
+		root->titleChar = temp->titleChar;
+		root->head = temp->head;
+
+		root->rightChild = deleteHelper(root->rightChild, temp->titleChar);
+
+	}
+}
 
 void MovieTree::deleteMovie(std::string title)
 {
@@ -125,7 +193,7 @@ void MovieTree::deleteMovie(std::string title)
 		return;
 	}
 	LLMovieNode *tempM = temp->head;
-	LLMovieNode *tempM2;
+	LLMovieNode *tempM2 = NULL;
 	if (tempM==NULL) {
 		cout << "Movie: " << title << " not found, cannot delete." << endl;
 		return;
@@ -135,6 +203,9 @@ void MovieTree::deleteMovie(std::string title)
 		tempM2 = tempM->next;
 		temp->head = tempM2;
 		delete tempM;
+		if (temp->head==NULL) {
+			root = deleteHelper(root, title[0]);
+		}
 		return;
 	}
 	while (tempM!=NULL) {
@@ -150,7 +221,24 @@ void MovieTree::deleteMovie(std::string title)
 
 void MovieTree::leftRotation(TreeNode* curr)
 {
-
+	TreeNode *temp = curr->rightChild;
+	temp->parent= curr->parent;
+	if (temp->leftChild!=NULL) {
+		temp->leftChild->parent = curr;
+	}
+	curr->rightChild = temp->leftChild; //humm
+	temp->leftChild = curr;
+	if (curr == root) {
+		root = temp;
+		curr->parent = temp;
+		return;
+	}
+	if (temp->parent->rightChild == curr) {
+		temp->parent->rightChild = temp;
+	}else if (temp->parent->leftChild == curr) {
+			temp->parent->leftChild = temp;
+	}
+	curr->parent = temp;
 }
 //------ Given Methods--------//
 void _grader_inorderTraversal(TreeNode * root)
