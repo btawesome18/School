@@ -33,12 +33,29 @@ PRIVATE METHODS:
 //  and subtracts 1 from each of the leaf nodes. Feel free to implement an
 //  additional helper function.
 
-Node* decrementHelp(Node root);
+Node* decrementHelp(Node *root);
 
-Node* decrementHelp(Node root){
-  if (root->parent==NULL) {
-    
+Node* decrementHelp(Node *root){
+  if (root==nullptr) {
+    return nullptr;
   }
+  if (root->left==nullptr&&root->right==nullptr) { // check if is leaf node and if is then decriments it
+    root->key = root->key - 1;
+    //todo add check parent
+    if ((root->parent!=nullptr)&&(root->parent->key==root->key)) { // checks if the tree is still valid and deletes root if not
+      std::cout << "deleting node " << root->key << '\n';
+      delete root;
+      root = nullptr;
+      return nullptr;
+    }
+    return root;
+  }
+
+
+  root->left = decrementHelp(root->left);
+  root->right = decrementHelp(root->right);
+  return root;
+
 }
 
 void BST::decrement(){
