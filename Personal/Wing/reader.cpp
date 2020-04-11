@@ -36,7 +36,7 @@ int main(int argc, char const *argv[]) {
         cout << Naca << '\n';
       //  cin >> test;
         current = readPolar(Naca,100);
-        if (!current.fail&&(current.liftToDrag > Max.liftToDrag)) {
+        if (!current.fail&&(current.liftToDrag > Max.liftToDrag)&&(current.lift>0.29)) {
           NacaMax = Naca;
           Max = current;
         }

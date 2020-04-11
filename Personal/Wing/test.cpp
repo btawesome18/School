@@ -25,7 +25,7 @@ int main(){
 
   for (int i = 0; i < 10; i++) {
     for (int t = 0; t < 10; t++) {
-      for (int u = 2; u < 42; u+=2) {
+      for (int u = 20; u < 42; u+=2) {
         Naca = to_string(i)+to_string(t);
         if (u>=10) {
           Naca = Naca + to_string(u);
@@ -35,7 +35,7 @@ int main(){
         //std::cout << Naca << '\n';
         //std::cin >> test;
 
-        thread compute(runXfoil,Naca,200000,.05,100,10,-2,.5,1);
+        thread compute(runXfoil,Naca,30000000,.05,100,10,-2,.5,1);
 
         thread killer(killTimer,120, p);
 
