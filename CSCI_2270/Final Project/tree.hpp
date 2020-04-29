@@ -1,29 +1,29 @@
-#ifndef linklist_H
-#define linklist_H
+#ifndef tree_H
+#define tree_H
 #include<iostream>
 
 using namespace std;
 
-struct Node;
+struct NodeT;
 //define Node
-struct Node{
+struct NodeT{
   int key;
-  Node* left = NULL;
-  Node* right = NULL;
+  NodeT* left = NULL;
+  NodeT* right = NULL;
 };
 
-class linklist
+class tree
 {
     public:
 
         void clear(); //deletes all nodes;
         void remove(int target); //deletes node with target key;
         void insert(int key); //inserts node with new key at end;
-        Node* search(int key); //Returned pointer to target node;
+        NodeT* search(int key); //Returned pointer to target node;
         void display(); // Prints all keys in order;
 
     private:
-        Node* Root=NULL;
+        NodeT* Root = NULL;
 };
 
 #endif

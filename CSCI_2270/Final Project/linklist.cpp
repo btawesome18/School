@@ -35,16 +35,16 @@ void linklist::remove(int target){ //deletes node with target key;
 
 void linklist::insert(int key){ //inserts node with new key at end;
   Node *Add = new Node;
-  Node *curr = Root;
   Add->key = key;
-  if(Root==NULL){
+
+  if (Root==NULL) {
     Root = Add;
     return;
   }
-  while (curr->next!=NULL) {
-    curr = curr->next;
-  }
-  curr->next = Add;
+  Node *curr = Root->next;
+
+  Root = Add;
+  Add->next = curr;
 }
 
 Node* linklist::search(int key){ //Returned pointer to target node;

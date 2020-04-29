@@ -1,20 +1,36 @@
 #include<iostream>
-#include "linklist.hpp"
+#include "tree.hpp"
 
 using namespace std;
 
-void clear(){ //deletes all nodes;
+void removeH(NodeT *node);
+//Helper to remove all Nodes;
+void removeH(NodeT *node){
+  if (node == NULL) {
+    return;
+  }
+  if (node->right!=NULL) {
+    removeH(node->right);
+  }
+  if (node->left!=NULL) {
+    removeH(node->left);
+  }
+  delete node;
 }
 
-void remove(int target){ //deletes node with target key;
+void tree::clear(){ //deletes all nodes;
+  removeH(Root);
 }
 
-void insert(int key){ //inserts node with new key at end;
-  Node *Insr, *curr, *prev;
+
+void tree::insert(int key){ //inserts node with new key at end;
+  NodeT *Insr, *curr, *prev;
+  Insr = new NodeT;
   Insr->key = key;
   if (Root==NULL) {
     Root = Insr;
     return;
+
   }
   curr = Root;
   while (curr!=NULL) {
@@ -33,9 +49,9 @@ void insert(int key){ //inserts node with new key at end;
 
 }
 
-Node* recusSearch(int key, Node *curr);
+NodeT* recusSearch(int key, NodeT *curr);
 
-Node* recusSearch(int key, Node *curr){
+NodeT* recusSearch(int key, NodeT *curr){
   if (curr==NULL) {
     return NULL;
   }
@@ -49,9 +65,19 @@ Node* recusSearch(int key, Node *curr){
   }
 }
 
-Node* search(int key){ //Returned pointer to target node;
+NodeT* tree::search(int key){ //Returned pointer to target node;
   return recusSearch(key,Root);
 }
 
-void display(){ // Prints all keys in order;
+void dispHelp(NodeT *curr) {
+  if (curr == NULL) {
+    return;
+  }
+  dispHelp(curr->left);
+  std::cout << curr->key << '\n';
+  dispHelp(curr->right);
+}
+
+void tree::display(){ // Prints all keys in order;
+  dispHelp(Root);
 }
