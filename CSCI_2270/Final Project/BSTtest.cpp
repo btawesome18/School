@@ -1,6 +1,5 @@
-#include "linklist.hpp"
+
 #include "tree.hpp"
-#include "hash.hpp"
 #include <iostream>
 #include <fstream>
 #include <ctime>
@@ -21,13 +20,14 @@ int main(int argc, char const *argv[]) {
 
   double insetArr[400], searchArr[400];
 
+  //for processing documents
   ifstream myfile;
   string input;
   ofstream outFile;
 
-  linklist LList;
+
   tree BSTree;
-  HashTable hash;
+
 
   myfile.open("dataSetB.csv");
 
@@ -43,7 +43,7 @@ int main(int argc, char const *argv[]) {
     auto start = steady_clock::now();
 
     for (size_t j = 0; j < 100; j++) {
-      BSTree.insert(data[(i*100)+i]);
+      BSTree.insert(data[(i*100)+j]);
     }
 
 
@@ -70,10 +70,11 @@ int main(int argc, char const *argv[]) {
   }
 
 
-  LList.clear();
   BSTree.clear();
 
-  outFile.open("time.csv");
+  //Writes results to external File;
+
+  outFile.open("TreeB.csv");
   for (size_t i = 0; i < 400; i++) {
     outFile << (double)(insetArr[i]) << "," << (double)(searchArr[i]) << "\n";
   }

@@ -21,15 +21,16 @@ int main(int argc, char const *argv[]) {
 
   double insetArr[400], searchArr[400];
 
+  //for processing documents
   ifstream myfile;
   string input;
   ofstream outFile;
 
   linklist LList;
-  tree BSTree;
-  HashTable hash;
+  //tree BSTree;
+  //HashTable hash;
 
-  myfile.open("dataSetB.csv");
+  myfile.open("dataSetA.csv");
 
   for (size_t i = 0; i < 40000; i++) {
     getline(myfile, input, ',');
@@ -43,7 +44,7 @@ int main(int argc, char const *argv[]) {
     auto start = steady_clock::now();
 
     for (size_t j = 0; j < 100; j++) {
-      BSTree.insert(data[(i*100)+i]);
+      LList.insert(data[(i*100)+j]);
     }
 
 
@@ -58,7 +59,7 @@ int main(int argc, char const *argv[]) {
 
     for (size_t j = 0; j < 100; j++) {
       randN = (rand() % (((i*100)+j)+1));
-      BSTree.search(data[randN]);
+      LList.search(data[randN]);
     }
 
     auto endS = steady_clock::now();
@@ -71,7 +72,8 @@ int main(int argc, char const *argv[]) {
 
 
   LList.clear();
-  BSTree.clear();
+
+  //Writes results to external File;
 
   outFile.open("time.csv");
   for (size_t i = 0; i < 400; i++) {

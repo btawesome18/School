@@ -21,13 +21,12 @@ int main(int argc, char const *argv[]) {
 
   double insetArr[400], searchArr[400];
 
+  //for processing documents
   ifstream myfile;
   string input;
   ofstream outFile;
 
-  linklist LList;
-  tree BSTree;
-  HashTable hash;
+  HashTable newHash(40000);
 
   myfile.open("dataSetB.csv");
 
@@ -43,12 +42,12 @@ int main(int argc, char const *argv[]) {
     auto start = steady_clock::now();
 
     for (size_t j = 0; j < 100; j++) {
-      BSTree.insert(data[(i*100)+i]);
+      newHash.insertItem(data[(i*100)+j],2);
     }
 
 
     auto end = chrono::steady_clock::now();
-
+    //record time
     insetArr[i] = (double)(duration_cast<nanoseconds>(end - start).count())/100.0;
 
     //test search
@@ -58,7 +57,7 @@ int main(int argc, char const *argv[]) {
 
     for (size_t j = 0; j < 100; j++) {
       randN = (rand() % (((i*100)+j)+1));
-      BSTree.search(data[randN]);
+      newHash.searchItem(data[randN],2);
     }
 
     auto endS = steady_clock::now();
@@ -70,10 +69,9 @@ int main(int argc, char const *argv[]) {
   }
 
 
-  LList.clear();
-  BSTree.clear();
+  //Writes results to external File;
 
-  outFile.open("time.csv");
+  outFile.open("Hash1B.csv");
   for (size_t i = 0; i < 400; i++) {
     outFile << (double)(insetArr[i]) << "," << (double)(searchArr[i]) << "\n";
   }

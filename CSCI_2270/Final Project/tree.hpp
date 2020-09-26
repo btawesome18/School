@@ -1,3 +1,10 @@
+/*
+  Authors: Brian Trybus and Rishi Mayekar
+
+Rishi Mayekar: Implemented Hash, and worked on Linked list
+Brian Trybus: Made testing program, Implemented BST, and worked on Linked List
+
+*/
 #ifndef tree_H
 #define tree_H
 #include<iostream>

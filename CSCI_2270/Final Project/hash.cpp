@@ -15,11 +15,14 @@ node* HashTable::createNode(int key, node* next) {
 HashTable::HashTable(int bsize) {
     table = new node* [bsize];
     tableSize = bsize;
+    for (size_t i = 0; i < bsize; i++) {
+      *(table+i)=NULL;
+    }
 }
 
 void HashTable::addvals() {
 
-    cout << "Adding 10, 5, 2, 1, 9" << endl;
+    //cout << "Adding 10, 5, 2, 1, 9" << endl;
 
     //table[1] = createNode(5, NULL);
     table[2] = createNode(2, NULL);
@@ -30,20 +33,22 @@ void HashTable::addvals() {
     table[0]->next = createNode(8, NULL);
     //table[4] = createNode(9, NULL);
 
-    cout << "added" << endl;
+    //cout << "added" << endl;
 
 }
 
 void HashTable::linearProbe(int mapVal, int key) {
 
     while(table[mapVal] != NULL) {
-        if(mapVal >= tableSize) {
+        if(mapVal >= tableSize-1) {
             mapVal = 0;
         } else {
             mapVal++;
         }
+        numOfcolision++;
     }
 
+    //cout << "spot found at " << mapVal << endl;
     table[mapVal] = createNode(key, NULL);
 }
 
@@ -51,25 +56,42 @@ void HashTable::quadraticProbe(int mapVal, int key) {
 
     int increment = 0;
     while(table[mapVal] != NULL) {
-        cout << "increment: " << increment << endl;
 
-        if(mapVal >= tableSize - 1) {
-            mapVal = 0;
-        }
         increment++;
-        mapVal = mapVal + (increment*increment);
+        mapVal = (mapVal + (increment*increment))%tableSize;
+
+
     }
 
-    cout << "spot found" << endl;
+    numOfcolision += increment;
+
+    //cout << "spot found at " << mapVal << endl;
 
     table[mapVal] = createNode(key, NULL);
 }
 
-bool HashTable::insertItem(int key) {
+void HashTable::LLchain(int mapVal, int key) {
+    node* current = table[mapVal];
+    while(current->next != NULL) {
+        current = current->next;
+    }
+    current->next = createNode(key, NULL);
+}
+
+bool HashTable::insertItem(int key, int option) {
+
     unsigned int mapValue = hashFunction(key);
+
     if(table[mapValue] != NULL) {
-        cout << "commencing probing map value: " << mapValue << " and key: " << key << endl;
-        quadraticProbe(mapValue, key);
+        //cout << "commencing probing map value: " << mapValue << " and key: " << key << endl;
+
+        if(option == 1) {
+            linearProbe(mapValue, key);
+        } else if(option == 2) {
+            quadraticProbe(mapValue, key);
+        } else if(option == 3) {
+            LLchain(mapValue, key);
+        }
 
     } else {
         table[mapValue] = createNode(key, NULL);
@@ -103,25 +125,60 @@ int HashTable::getNumOfCollision() {
     return numOfcolision;
 }
 
-node* HashTable::searchItem(int key) {
+node* HashTable::searchItem(int key, int option) {
 
-    for(int i=0; i<tableSize; i++) {
+    int index = hashFunction(key);
 
-        if(table[i] != NULL) {
-            if(table[i]->key != key) {
-                node* current = table[i];
-                while(current != NULL) {
-                    if(current->key == key) {
-                        return current;
-                    }
-                    current = current->next;
+    if(option == 1) {
+        while(true) {
+            if(index >= tableSize) {
+                index = 0;
+            }
+            if(table[index]->key == key) {
+                return table[index];
+            }
+
+            index++;
+        }
+
+    } else if(option == 2) {
+
+        int increment = 0;
+
+        while(true) {
+
+            increment++;
+            index = index + increment^2;
+            //cout<<"Increment: "<<increment<<endl;
+
+            while(index >= tableSize) {
+                index = index-tableSize;
+            }
+
+            if(table[index]!=NULL) {
+                if(table[index]->key == key) {
+                    return table[index];
                 }
-            } else {
-                return table[i];
+
             }
         }
 
+    } else if(option == 3) {
+
+
+        node* current = table[index];
+
+        while(current != NULL) {
+            if(current->key == key) {
+                return current;
+            }
+            current = current->next;
+        }
+
+        return NULL;
     }
+
+
 }
 
 #endif

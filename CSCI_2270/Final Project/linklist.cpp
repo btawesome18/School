@@ -41,7 +41,7 @@ void linklist::insert(int key){ //inserts node with new key at end;
     Root = Add;
     return;
   }
-  Node *curr = Root->next;
+  Node *curr = Root;
 
   Root = Add;
   Add->next = curr;
@@ -49,12 +49,16 @@ void linklist::insert(int key){ //inserts node with new key at end;
 
 Node* linklist::search(int key){ //Returned pointer to target node;
   Node *curr = Root;
+
   while (curr!=NULL) {
+    //std::cout << curr->key << '\n';
     if (curr->key==key) {
+      //std::cerr << "/* error message */" << '\n';
       return curr;//returns target node;
     }
     curr = curr->next;
   }
+  //std::cout << "NULL" << '\n';
   return NULL; //if not found returns NULL
 }
 
