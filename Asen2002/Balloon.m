@@ -33,7 +33,7 @@ temp = 216; %K
 %pressureAlt = pressureSea - densitySea*gravity*targetAlt;
 %densityAlt = pressureAlt/(Rair*temp);
 %Using for testing https://www.digitaldutch.com/atmoscalc/
-p_air= 0.04008; %kg/meter cubed
+p_air=  0.04008; %kg/meter cubed
 pressureAlt = 2511.02;
 
 
@@ -75,6 +75,12 @@ volume_day = (Rloon*t_day*mass_He)/pressureAlt;
 
 density_day = (m_pay+mass_He+mass_mat)/volume_day;
 
+dayAlt = 26400;
+
+p_He_Day = pressureAlt/(Rloon*t_day);
+
+radiusDay = (((m_pay)/(((p_air*(4/3)*pi)-(4*pi*p_mat)*((factorS*P_gage)/(2*sigmaT)))-(((p_He_Day*(4/3)*pi)))))^(1/3));
+
 
 %night
 t_night = (((a_eb*qEarth))/(4*e_b*S_sb))^(1/4);
@@ -83,5 +89,19 @@ volume_night = (Rloon*t_night*mass_He)/pressureAlt;
 
 density_night = (m_pay+mass_He+mass_mat)/volume_night;
 
-[`,`,`,rho] = atmosisa();
+nightAlt = 23700;
+
+p_He_Night = pressureAlt/(Rloon*t_night);
+
+radiusNight = (((m_pay)/(((p_air*(4/3)*pi)-(4*pi*p_mat)*((factorS*P_gage)/(2*sigmaT)))-(((p_He_Night*(4/3)*pi)))))^(1/3));
+
+h = 20000:1000:30000;
+
+[~,~,~,rho] = atmosisa(h);
+
+
+%Altitude Control gas lost
+
+volumeVented = ((4*pi)/3)* ((radiusNight^3)-(radiusDay^3))
+
 

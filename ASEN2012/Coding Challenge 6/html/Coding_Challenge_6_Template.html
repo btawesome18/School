@@ -1,0 +1,348 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Coding_Challenge_6_Template</title><meta name="generator" content="MATLAB 9.7"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2020-10-18"><meta name="DC.source" content="Coding_Challenge_6_Template.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#2">Housekeeping</a></li><li><a href="#3">Prerequisites from Coding Challenge 5 %%</a></li><li><a href="#4">Set-up for Runge Kutta Method %%</a></li><li><a href="#5">Plotting Results %%</a></li></ul></div><pre class="codeinput"><span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+<span class="comment">% CODE CHALLENGE 6 - Template Script</span>
+<span class="comment">%</span>
+<span class="comment">% The purpose of this challenge is to predict whether or not the Boulder</span>
+<span class="comment">% Reservior will have to close due to a major leak.</span>
+<span class="comment">%</span>
+<span class="comment">% In Coding Challenge 5, you did the following:</span>
+<span class="comment">% - Part 1:</span>
+<span class="comment">%     1) Read in the provided data file</span>
+<span class="comment">%     2) Estimated reservoir volume w/ Trapezoidal and Simpson's 1/3 Rules</span>
+<span class="comment">%     3) Compared the accuracy of the two results</span>
+<span class="comment">%</span>
+<span class="comment">% - Part 2:</span>
+<span class="comment">%    1) Propagated t and h using Euler's Method</span>
+<span class="comment">%    2) Used plots to observe the effect of different timesteps on the</span>
+<span class="comment">%       estimation accuracy</span>
+<span class="comment">%</span>
+<span class="comment">% In Coding Challenge 6, you will build upon the code that you wrote up</span>
+<span class="comment">% for Coding Challenge 5. Fill in what you can in the below code template</span>
+<span class="comment">% by using the code you completed last week. Once you get to the</span>
+<span class="comment">% Runge-Kutta approximation, calculate K-values and use the Runge-Kutta</span>
+<span class="comment">% equations to approximate the reservoir height over time.</span>
+<span class="comment">%</span>
+<span class="comment">% In the last section of this code, create plots that effectively</span>
+<span class="comment">% illustrate differences between approximation methods and parameters,</span>
+<span class="comment">% comparing Runge-Kutta using different time steps and also Runge-Kutta vs.</span>
+<span class="comment">% Euler's Method.</span>
+<span class="comment">%</span>
+<span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+<span class="comment">%</span>
+<span class="comment">% NOTE: DO NOT change any variable names already present in the code.</span>
+<span class="comment">%</span>
+<span class="comment">% Upload your team's script to Gradescope when complete.</span>
+<span class="comment">%</span>
+<span class="comment">% NAME YOUR FILE AS Challenge6_Sec{section number}_Group{group breakout #}.m</span>
+<span class="comment">% ***Section numbers are 1 or 2***</span>
+<span class="comment">% EX File Name: Challenge6_Sec1_Group15.m</span>
+<span class="comment">%</span>
+<span class="comment">% STUDENT TEAMMATES</span>
+<span class="comment">% 1) Nina Dolatshahi</span>
+<span class="comment">% 2) Alex Miceli</span>
+<span class="comment">% 3) Luca Herlein</span>
+<span class="comment">% 4)Brian Trybus</span>
+<span class="comment">% 5)</span>
+<span class="comment">%</span>
+<span class="comment">%</span>
+<span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+</pre><h2 id="2">Housekeeping</h2><p>Don't clear variables (i.e. with "clear"); this makes grading difficult.</p><pre class="codeinput">close <span class="string">all</span>;   <span class="comment">% Close all open figure windows</span>
+clc;         <span class="comment">% Clear the command window</span>
+</pre><h2 id="3">Prerequisites from Coding Challenge 5 %%</h2><pre class="codeinput"><span class="comment">% Reading in Provided Depth Data %</span>
+data = dlmread(<span class="string">'depth_data.csv'</span>,<span class="string">','</span>,1,0); <span class="comment">% Read in depth data from .csv</span>
+x = data(:,1);                            <span class="comment">% Position along reservoir  [ft]</span>
+h = data(:,2);                            <span class="comment">% Depth of reservoir        [ft]</span>
+L = 4836;                                 <span class="comment">% Length of reservior       [ft]</span>
+</pre><h2 id="4">Set-up for Runge Kutta Method %%</h2><p>Problem Parameters %</p><pre class="codeinput">h0 = 20;                     <span class="comment">% Initial reservoir depth                 [ft]</span>
+alpha = 1.5e6;               <span class="comment">% Relating volume change to depth   [ft^2/day]</span>
+dV_in = 2e7;                 <span class="comment">% Volume inflow rate                [ft^3/day]</span>
+
+<span class="comment">% Approximation Parameters %</span>
+timestep = [16 8 4 2 1];     <span class="comment">% Timesteps to use for approximation    [days]</span>
+<span class="keyword">for</span> j = 1:length(timestep)
+    t_end = 160;             <span class="comment">% Choose an end time for your program   [days]</span>
+    t = 0:timestep(j):t_end; <span class="comment">% Allocate a time vector                [days]</span>
+    h = zeros(1,length(t));  <span class="comment">% Allocate a depth vector                 [ft]</span>
+    h(1) = h0;               <span class="comment">% Set a depth vector initial value        [ft]</span>
+    h_RK = h;                <span class="comment">% Set a depth vector for Runge-Kutta      [ft]</span>
+
+    <span class="keyword">for</span> i = 1:(length(t)-1)  <span class="comment">% Euler's Method - use your code from Lab 6</span>
+        dhdt = get_dhdt(h(i),L,alpha,dV_in);          <span class="comment">% Get dh/dt at this depth             [ft/day]</span>
+        h(i+1) = (h(i)+(dhdt*timestep(j)));<span class="comment">% Compute next depth value</span>
+        t(i+1) = t(i) + timestep(j);
+    <span class="keyword">end</span>
+
+
+    <span class="keyword">for</span> i = 1:(length(t)-1)  <span class="comment">% Runge-Kutta Method</span>
+        K1 = get_dhdt(h_RK(i),L,alpha,dV_in);            <span class="comment">% Calculate your K1 value</span>
+        K2 = get_dhdt(h_RK(i)+(timestep(j)*.5*K1),L,alpha,dV_in);            <span class="comment">% Calculate your K2 value</span>
+        K3 = get_dhdt(h_RK(i)+(timestep(j)*.5*K2),L,alpha,dV_in);            <span class="comment">% Calculate your K3 value</span>
+        K4 = get_dhdt(h_RK(i)+(timestep(j)*K3),L,alpha,dV_in);            <span class="comment">% Calculate your K4 value</span>
+        h_RK(i+1) = h_RK(i)+((timestep(j)/6)*((K1)+(2*K2)+(2*K3)+(K4)));     <span class="comment">% Compute your next reservoir height      [ft]</span>
+    <span class="keyword">end</span>
+
+    <span class="comment">% Don't touch these three lines of code... %</span>
+    eval([<span class="string">'t_'</span> num2str(timestep(j)) <span class="string">' = t;'</span>])
+    eval([<span class="string">'h_E_'</span> num2str(timestep(j)) <span class="string">' = h;'</span>])
+    eval([<span class="string">'h_RK_'</span> num2str(timestep(j)) <span class="string">' = h_RK;'</span>])
+<span class="keyword">end</span>
+</pre><h2 id="5">Plotting Results %%</h2><p>READ THIS:    After the above code runs, the "eval" statements at the end of the loop create three sets of variables. One set holds the time vectors used in the various approximations, named "t_16" for the 16-day time step, "t_8" for the 8-day time step, etc. Another set holds the Euler approximation results for the various timesteps, named "h_E_16" for the 16-day time step, "h_E_8" for the 8-day time step, etc. The last set holds the Tunge-Kutta approximation results for the various timesteps, named "h_RK_16", "h_RK_8", etc. For simplicity, you may use these vectors in your plotting.</p><pre class="codeinput">fig1 = figure(<span class="string">'Units'</span>,<span class="string">'Normalized'</span>,<span class="string">'Position'</span>,[0 0.25 0.65 0.50]);
+
+
+<span class="comment">% Part 1: Effect of timestep on Euler's Method approximation %</span>
+subplot(1,2,1)
+plot(t_1,h_E_1,t_2,h_E_2,t_4,h_E_4,t_8,h_E_8,t_16,h_E_16)
+title(<span class="string">'Part 1: Effect of Time Step Size on Euler''s Method Approximation'</span>, <span class="keyword">...</span>
+    <span class="string">'Interpreter'</span>,<span class="string">'latex'</span>,<span class="string">'Fontsize'</span>,14)
+<span class="comment">% Here, plot the results of your Euler's approximation using different</span>
+<span class="comment">% time steps. Is there a significant difference between time steps?</span>
+<span class="keyword">...</span>
+
+
+<span class="comment">% Part 2: Effect of timestep on Runge-Kutta approximation %</span>
+subplot(1,2,2)
+plot(t_1,h_RK_1,t_2,h_RK_2,t_4,h_RK_4,t_8,h_RK_8,t_16,h_RK_16)
+title(<span class="string">'Part 2: Effect of Time Step Size on RK Approximation'</span>, <span class="keyword">...</span>
+    <span class="string">'Interpreter'</span>,<span class="string">'latex'</span>,<span class="string">'Fontsize'</span>,14)
+<span class="comment">% Here, plot the results of your Runge-Kutta Method approximation using different</span>
+<span class="comment">% time steps. Is there a significant difference between time steps?</span>
+<span class="keyword">...</span>
+
+
+fig2 = figure(<span class="string">'Units'</span>,<span class="string">'Normalized'</span>,<span class="string">'Position'</span>,[0.65 0.25 0.35 0.50]);
+
+
+<span class="comment">% Part 3: Comparing Runge-Kutta to Euler's Method %</span>
+plot(t_16,h_RK_16,t_16,h_E_16)
+title(<span class="string">'Part 3: Comparing RK Approximation to Euler''s Method'</span>, <span class="keyword">...</span>
+    <span class="string">'Interpreter'</span>,<span class="string">'latex'</span>,<span class="string">'Fontsize'</span>,14)
+legend(<span class="string">'Runge-Kutta'</span>,<span class="string">'Euler''s'</span>)
+<span class="comment">% Here plot the results of your Runge-Kutta and Euler's Method</span>
+<span class="comment">% approximations together. You are encouraged to use a few different step</span>
+<span class="comment">% sizes for Euler's Method, but you can decide for yourself how best to</span>
+<span class="comment">% illustrate the difference in accuracy between Euler and Runge-Kutta. Is</span>
+<span class="comment">% there a significant difference in approximation accuracy?</span>
+</pre><img vspace="5" hspace="5" src="Coding_Challenge_6_Template_01.png" alt=""> <img vspace="5" hspace="5" src="Coding_Challenge_6_Template_02.png" alt=""> <p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2019b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% CODE CHALLENGE 6 - Template Script
+%
+% The purpose of this challenge is to predict whether or not the Boulder
+% Reservior will have to close due to a major leak.
+%
+% In Coding Challenge 5, you did the following:
+% - Part 1:
+%     1) Read in the provided data file
+%     2) Estimated reservoir volume w/ Trapezoidal and Simpson's 1/3 Rules
+%     3) Compared the accuracy of the two results
+%
+% - Part 2:
+%    1) Propagated t and h using Euler's Method
+%    2) Used plots to observe the effect of different timesteps on the
+%       estimation accuracy
+%
+% In Coding Challenge 6, you will build upon the code that you wrote up
+% for Coding Challenge 5. Fill in what you can in the below code template
+% by using the code you completed last week. Once you get to the
+% Runge-Kutta approximation, calculate K-values and use the Runge-Kutta
+% equations to approximate the reservoir height over time.
+%
+% In the last section of this code, create plots that effectively
+% illustrate differences between approximation methods and parameters,
+% comparing Runge-Kutta using different time steps and also Runge-Kutta vs.
+% Euler's Method.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% NOTE: DO NOT change any variable names already present in the code.
+% 
+% Upload your team's script to Gradescope when complete.
+% 
+% NAME YOUR FILE AS Challenge6_Sec{section number}_Group{group breakout #}.m 
+% ***Section numbers are 1 or 2*** 
+% EX File Name: Challenge6_Sec1_Group15.m 
+%
+% STUDENT TEAMMATES
+% 1) Nina Dolatshahi
+% 2) Alex Miceli
+% 3) Luca Herlein
+% 4)Brian Trybus
+% 5) 
+%
+% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Housekeeping 
+% Don't clear variables (i.e. with "clear"); this makes grading difficult.
+
+close all;   % Close all open figure windows
+clc;         % Clear the command window
+
+
+%% Prerequisites from Coding Challenge 5 %%
+
+% Reading in Provided Depth Data %
+data = dlmread('depth_data.csv',',',1,0); % Read in depth data from .csv
+x = data(:,1);                            % Position along reservoir  [ft]
+h = data(:,2);                            % Depth of reservoir        [ft]
+L = 4836;                                 % Length of reservior       [ft]
+
+
+%% Set-up for Runge Kutta Method %%
+% Problem Parameters %
+h0 = 20;                     % Initial reservoir depth                 [ft]
+alpha = 1.5e6;               % Relating volume change to depth   [ft^2/day]
+dV_in = 2e7;                 % Volume inflow rate                [ft^3/day]
+
+% Approximation Parameters %
+timestep = [16 8 4 2 1];     % Timesteps to use for approximation    [days]
+for j = 1:length(timestep)
+    t_end = 160;             % Choose an end time for your program   [days]
+    t = 0:timestep(j):t_end; % Allocate a time vector                [days]
+    h = zeros(1,length(t));  % Allocate a depth vector                 [ft]
+    h(1) = h0;               % Set a depth vector initial value        [ft]
+    h_RK = h;                % Set a depth vector for Runge-Kutta      [ft]
+
+    for i = 1:(length(t)-1)  % Euler's Method - use your code from Lab 6
+        dhdt = get_dhdt(h(i),L,alpha,dV_in);          % Get dh/dt at this depth             [ft/day]
+        h(i+1) = (h(i)+(dhdt*timestep(j)));% Compute next depth value
+        t(i+1) = t(i) + timestep(j);
+    end
+
+    
+    for i = 1:(length(t)-1)  % Runge-Kutta Method
+        K1 = get_dhdt(h_RK(i),L,alpha,dV_in);            % Calculate your K1 value
+        K2 = get_dhdt(h_RK(i)+(timestep(j)*.5*K1),L,alpha,dV_in);            % Calculate your K2 value
+        K3 = get_dhdt(h_RK(i)+(timestep(j)*.5*K2),L,alpha,dV_in);            % Calculate your K3 value
+        K4 = get_dhdt(h_RK(i)+(timestep(j)*K3),L,alpha,dV_in);            % Calculate your K4 value
+        h_RK(i+1) = h_RK(i)+((timestep(j)/6)*((K1)+(2*K2)+(2*K3)+(K4)));     % Compute your next reservoir height      [ft]
+    end
+    
+    % Don't touch these three lines of code... %
+    eval(['t_' num2str(timestep(j)) ' = t;'])
+    eval(['h_E_' num2str(timestep(j)) ' = h;'])
+    eval(['h_RK_' num2str(timestep(j)) ' = h_RK;'])
+end
+
+
+%% Plotting Results %%
+% READ THIS:
+%    After the above code runs, the "eval" statements at the end of
+% the loop create three sets of variables. One set holds the time vectors
+% used in the various approximations, named "t_16" for the 16-day time
+% step, "t_8" for the 8-day time step, etc. Another set holds the Euler
+% approximation results for the various timesteps, named "h_E_16" for the
+% 16-day time step, "h_E_8" for the 8-day time step, etc. The last set
+% holds the Tunge-Kutta approximation results for the various timesteps,
+% named "h_RK_16", "h_RK_8", etc. For simplicity, you may use these
+% vectors in your plotting.
+
+fig1 = figure('Units','Normalized','Position',[0 0.25 0.65 0.50]);
+
+
+% Part 1: Effect of timestep on Euler's Method approximation %
+subplot(1,2,1)
+plot(t_1,h_E_1,t_2,h_E_2,t_4,h_E_4,t_8,h_E_8,t_16,h_E_16)
+title('Part 1: Effect of Time Step Size on Euler''s Method Approximation', ...
+    'Interpreter','latex','Fontsize',14)
+% Here, plot the results of your Euler's approximation using different
+% time steps. Is there a significant difference between time steps?
+...
+    
+
+% Part 2: Effect of timestep on Runge-Kutta approximation %
+subplot(1,2,2)
+plot(t_1,h_RK_1,t_2,h_RK_2,t_4,h_RK_4,t_8,h_RK_8,t_16,h_RK_16)
+title('Part 2: Effect of Time Step Size on RK Approximation', ...
+    'Interpreter','latex','Fontsize',14)
+% Here, plot the results of your Runge-Kutta Method approximation using different
+% time steps. Is there a significant difference between time steps?
+...
+    
+
+fig2 = figure('Units','Normalized','Position',[0.65 0.25 0.35 0.50]);
+
+
+% Part 3: Comparing Runge-Kutta to Euler's Method %
+plot(t_16,h_RK_16,t_16,h_E_16)
+title('Part 3: Comparing RK Approximation to Euler''s Method', ...
+    'Interpreter','latex','Fontsize',14)
+legend('Runge-Kutta','Euler''s')
+% Here plot the results of your Runge-Kutta and Euler's Method
+% approximations together. You are encouraged to use a few different step
+% sizes for Euler's Method, but you can decide for yourself how best to
+% illustrate the difference in accuracy between Euler and Runge-Kutta. Is
+% there a significant difference in approximation accuracy?
+...
+
+    
+
+##### SOURCE END #####
+--></body></html>
