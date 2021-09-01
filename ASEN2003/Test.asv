@@ -1,0 +1,15 @@
+%% 22
+p1 = -((Kg^2)*(Km^2))/(Jhub*Rm)
+p2 = ((Kg^2)*(Km^2)*L)/(Jhub*Rm)
+
+q1 = Karm/(L*Jhub)
+q2 = -(Karm*(Jhub+JL))/(JL*Jhub)
+
+r1 = -(Kg*Km)/(Jhub*Rm)
+r1 = -(Kg*Km*L)/(Jhub*Rm)
+
+%% 26
+
+OLOD = (K1((r1*(s^2))+((q1*r2)-(r1*q2))))/((S^4)+(lamda3*(s^3))+(lamda2*(s^2))+(lamda1*(s))+(lamda0))
+
+DOD = (K1((r1*(s^2))+((q1*r2)-(r1*q2))))/((S^4)+(lamda3*(s^3))+(lamda2*(s^2))+(lamda1*(s))+(lamda0))
