@@ -97,7 +97,7 @@ xlim([0,.25])
 
 function [value, isterminal, direction] = myEvent(t, A)
     %Stop ODE at ground
-    value      = (A(2) <= 0);
+    value      = (A(1) <= 0);
     isterminal = 1;   % Stop the integration
     direction  = 0;
 
