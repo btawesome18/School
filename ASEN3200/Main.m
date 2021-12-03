@@ -1,31 +1,34 @@
-BN = M1(60)*M2(-45)*M3(30);
-FN = M1(-15)*M2(25)*M3(10);
+%% Problem 1: 11.7
+p = [10,1,1,1;10,-1,-1,-1;8,4,-4,4;8,-2,2,-2;12,3,-3,-3;12,-3,3,3]; %Table in weight,x,y,z format
+w = p(1:6,1);
+W = sum(w); %Total mass
+%Finds Center of Mass
+cg_x = sum(w.*p(1:6,2))/W;
+cg_y = sum(w.*p(1:6,3))/W;
+cg_z = sum(w.*p(1:6,4))/W;
+%Offsets cordinates to Be centered at CG
+p1 = p;
+p1(1:6,2) = p1(1:6,2)-cg_x;
+p1(1:6,3) = p1(1:6,3)-cg_y;
+p1(1:6,4) = p1(1:6,4)-cg_z;
+%Find moments of inerta along axises.
+Ixx = p1(1:6,1).*((p1(1:6,3).^2)+(p1(1:6,4).^2));
+Iyy = p1(1:6,1).*((p1(1:6,2).^2)+(p1(1:6,4).^2));
+Izz = p1(1:6,1).*((p1(1:6,3).^2)+(p1(1:6,2).^2));
+Ixy = -p1(1:6,1).*p1(1:6,2).*p1(1:6,3);
+Ixz = -p1(1:6,1).*p1(1:6,2).*p1(1:6,4);
+Iyz = -p1(1:6,1).*p1(1:6,3).*p1(1:6,4);
 
-BF = BN*(FN')
+%Put everything togeather in a tensor
+I = [sum(Ixx),sum(Ixy),sum(Ixz);sum(Ixy),sum(Iyy),sum(Iyz);sum(Ixz),sum(Iyz),sum(Izz)]
+%% Problem 2: 11.8
 
-O = rad2deg(atan2(BF(3,1),BF(3,2)))
-i = acosd(BF(3,3))
-w = rad2deg(atan2(BF(1,3),BF(2,3)))
+%Define new Axis line 
+newAxisPoint = [1;2;2];
+%Make unit vector
+newAxisPoint = newAxisPoint/norm(newAxisPoint);
+%Find inertia of intrest using I = V dot I*V;
+Ia = dot(I*newAxisPoint,newAxisPoint)
 
-function out = M1(a)
-%DCM Summary of this function goes here
-%   Detailed explanation goes here
-     out = [1,0,0;0,cosd(a),sind(a);0,-sind(a),cosd(a)];
 
-end
-
-function out = M2(b)
-%DCM Summary of this function goes here
-%   Detailed explanation goes here
-   
-     out = [cosd(b),0,-sind(b);0,1,0;sind(b),0,cosd(b)];
-
-end
-
-function out = M3(c)
-%DCM Summary of this function goes here
-%   Detailed explanation goes here
-
-     out = [cosd(c),sind(c),0;-sind(c),cosd(c),0;0,0,1];
-end
 
