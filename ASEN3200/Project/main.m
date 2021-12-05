@@ -25,7 +25,7 @@ yCoast = world_coastline_low(:,2)*(pi/180);
 citys = readtable("worldcities.csv");
 
 %Allow for loading less citys if ':' is replaced with a number
-citysOfWorthC = (citys(:,3:4));
+citysOfWorthC = (citys(30,3:4));
 citysOfWorth = zeros(size(citysOfWorthC));
 
 %Convert city possitions to rad then to 3d cords.
