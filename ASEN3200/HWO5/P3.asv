@@ -1,0 +1,20 @@
+a = 0.723*(1.496e+8); % AU
+e = 0.0068;
+mu = 1.327 *(10^11);% of the sum
+Ra = a*(1+e);
+Vav = sqrt((1-e)/(1+e))*sqrt(mu/a);
+
+a1 = (Ra+(1.496e+8))/2;
+e1 = 1-(Ra/a1);
+
+Va = sqrt((1-e1)/(1+e1))*sqrt(mu/a1);
+Vp = sqrt((1+e1)/(1-e1))*sqrt(mu/a1);
+Ve = sqrt(mu/(1.496e+8));
+
+muE = 3.986*(10^5);
+muV = 3.249*(10^5);
+V1 = Ve - Va;
+V2 = Vp - Vav;
+
+Vp1 = sqrt(()+(2*muE/))
+

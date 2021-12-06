@@ -1,0 +1,16 @@
+%Use a computer to plot a graph (all plots 
+%on same axes) of flyby bending angle as a function of V_?  for planetary flybys of Mercury, Venus, Earth, Mars, Jupiter, and Saturn assuming the flyby periapsis has an altitude of 1000 km.
+
+mu = [2.203*(10^4),3.249*(10^5),3.986*(10^5),4.283*(10^4),1.267*(10^8),3.793*(10^7)]; %Mu in km^3s^-2
+planet = ["Mercury","Venus","Earth","Mars","Jupiter","Saturn"];
+Rp = 1000; %km
+
+for i = 1:6 
+    
+    for j = 0:200
+        delta = 2*asin(1/((1/mu())*()))
+        
+        
+    end
+    
+end
