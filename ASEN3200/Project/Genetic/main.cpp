@@ -66,7 +66,7 @@ float valueAtPoint(float x, float y, float z, city citys[],  int length, float m
 
 int main(){
   srand(time(0));
-  int populationSize = 2;
+  int populationSize = 10;
   constillation population[populationSize];
   genSummery Current;
   int genCount = 0;
@@ -107,7 +107,7 @@ int main(){
 
     buildPopulation(population, populationSize);
 
-    while ((genCount < 2)) { //can add a target here so it will stop when it meets a goal
+    while ((genCount < 100)) { //can add a target here so it will stop when it meets a goal
       genCount++;
       Current = runGeneration(population, populationSize, 2, fitnessPer,  citys , length);
       std::cout << "New Gen: " << genCount << '\n';
@@ -187,7 +187,7 @@ int calculateFitness(constillation population[], float fitness[], int size, city
 
 float calcFitnessOfConst(constillation element, city citys[],  int length){
   // Needs to propagate the orbits of each const and then calculate the fitness of that constillation.
-  std::cout << "Is running constillation." << '\n';
+  //std::cout << "Is running constillation." << '\n';
   int costConst = (element.numLaunches*100) + (element.numSatTotal*5);
   int profit =0;
   float fit =0;
@@ -224,7 +224,7 @@ float calcFitnessOfConst(constillation element, city citys[],  int length){
   float j = 0;
   float valSum = 0;
   for (size_t inc = 0; inc < element.numLaunches; inc++) {
-    std::cout << "Launch: "<< inc << '\n';
+    //std::cout << "Launch: "<< inc << '\n';
     rocket = element.launches[inc];
     a = rocket.a;
     e = rocket.e;
@@ -240,23 +240,25 @@ float calcFitnessOfConst(constillation element, city citys[],  int length){
     // Find
     for (size_t t = 0; t < timespan; t+=timestep) {
       //true anomaly will be based off of period and number of sats to give even spacing
-      std::cout << "Time: "<< t << '\n';
+      //std::cout << "Time: "<< t << '\n';
       w = om + (wDot*t);
       Omega = Om+(OmegaDot*t);
       for (size_t satCur = 0; satCur < numSats; satCur++) {
-        std::cout << "Sat: "<< satCur;
+        //std::cout << "Sat: "<< satCur;
         tOff = t + ((P/numSats)*satCur); //This gives the time offset for each sat.
 
+        numSats = 0;
         if ((n*tOff)<3.14159265358979) {
           E = (n*tOff)+(e/2);
         } else {
           E = (n*tOff)-(e/2);
         }
         ratio = 1;
-        while (abs(ratio)>(0.000000001)) {
+        while (abs(ratio)>(0.0000001)&&(numSats<20)) {
           ratio = (E - e*sin(E) - (n*tOff))/(1 - e*cos(E));
 
           E = E-ratio;
+          numSats++;
         }
 
         f = 2*atan((sqrt((1+e)/(1-e)))*tan(E/2));
@@ -266,11 +268,11 @@ float calcFitnessOfConst(constillation element, city citys[],  int length){
         ry = (-R*cos(j)*cos(f)*sin(w)*cos(Omega))-(cos(i)*R*cos(j)*cos(w)*sin(Omega))+(cos(i)*R*cos(j)*sin(f)*cos(w)*cos(Omega))-(R*cos(j)*sin(f)*sin(w)*sin(Omega))-(R*sin(j)*cos(f)*cos(w)*cos(Omega))+(cos(i)*R*sin(j)*cos(f)*sin(w)*sin(Omega))-(R*sin(j)*sin(f)*cos(w)*sin(Omega))-(cos(i)*R*sin(j)*sin(f)*sin(w)*cos(Omega));
         rz = (sin(i)*R*cos(j)*sin(Omega))-(sin(i)*R*sin(j)*cos(Omega));
         valSum = valSum + valueAtPoint(rx,ry,rz,citys,length,maxAngle);
-        std::cout << " Value: "<< valSum << '\n';
+        //std::cout << " Value: "<< valSum << '\n';
       }
     }
   }
-  std::cout << "Const done" << '\n';
+  //std::cout << "Const done" << '\n';
   return ((valSum*timestep)/((float)costConst));
 }
 
@@ -308,7 +310,7 @@ float valueAtPoint(float x, float y, float z, city citys[],  int length, float m
     dot = (cx*vecx)+(cy*vecy)+(cz*vecz);
 
     if (asin(dot)>maxAngle) {
-      std::cout << "Wow" << '\n';
+      //std::cout << "Wow: " << sum << '\n';
       sum = sum +(citys[i].population);
     }
   }
