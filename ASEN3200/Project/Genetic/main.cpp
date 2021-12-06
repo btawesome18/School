@@ -4,18 +4,15 @@
 #include <cmath>
 #include <cstdlib>
 #include <fstream>
-#include <vectors>
+#include <vector>
+
 
 //#include<time.h>
 
 
 using namespace std;
 
-struct genSummery{
-  float fitness;
-  float aveFit;
-  constillation val;
-};
+
 
 struct launch{
   float a=0;
@@ -32,32 +29,38 @@ struct constillation{
   vector<launch> launches;
 };
 
+struct genSummery{
+  float fitness;
+  float aveFit;
+  constillation val;
+};
+
 struct city{
   int population =0;
   float pos[3];
 };
 
-double calcAve(double fitness[], int size);
+float calcAve(float fitness[], int size);
 
-genSummery runGeneration(string population[], int populationSize, string target, int mutationRate, double fitness[]);
+genSummery runGeneration(constillation population[], int populationSize, int mutationRate, float fitness[], city citys[] ,  int length);
 
-void causeMutation(string population[], int populationSize, double mutationRate);
+void causeMutation(constillation population[], int populationSize, int mutationRate);
 
-string breed(string parent1, string parent2, bool method);
+constillation breed(constillation parent1, constillation parent2);
 
-void buildMatingPool(double fitnessPer[], int parents[], int arrySize, int factor);
+void buildMatingPool(float fitnessPer[], int parents[], int arrySize, int factor);
 
-double sumArryD(double arry[], int arrySize);
+float sumArryD(float arry[], int arrySize);
 
-char randLetter();
+constillation randCosntilation();
 
-int calculateFitness(string target, string population[], double fitness[], int size, int length);
+int calculateFitness(constillation population[], float fitness[], int size, city citys[] ,  int length);
 
 float calcFitnessOfConst(constillation element, city citys[],  int length);
 
 int compareString(string test, string sample);
 
-void buildPopulation(string poulation[], int size, int targetLenght);
+void buildPopulation(constillation poulation[], int size);
 
 float valueAtPoint(float x, float y, float z, city citys[],  int length, float maxAngle);
 
@@ -95,8 +98,8 @@ int main(){
 
   startTime = clock();
 
-  for (int d = 0; d < 1; d++) {
-    fileName = "output" + to_string(d) + ".csv";
+
+    fileName = "output.csv";
 
     Current.fitness = 0;
     myfile.open(fileName);
@@ -118,11 +121,11 @@ int main(){
     }
     //endTime = clock();
     //execTime = (double)(endTime-startTime)/CLOCKS_PER_SEC;
-    cout << "Iter: " << d  << " " << genCount << endl;
+
     genTotal = genTotal + genCount;
   //  myfile << execTime << ",";
     //myfile.close();
-  }
+
   //  myfile.close();
   endTime = clock();
   execTime = (double)(endTime-startTime)/CLOCKS_PER_SEC;
@@ -145,17 +148,17 @@ constillation randCosntilation(){
   constillation temp;
   int count = 0;
   launch rocket;
-  temp.numLaunches = (rand()%20)+3;
+  temp.numLaunches = (rand()%10)+3; //between 3 and 13
   count = temp.numLaunches;
   temp.numSatTotal = 0;
   temp.launches.resize(count);
   for (size_t i = 0; i < count; i++) {
     //r must be between 6728 and 7478, 750km range
     rocket.a = (rand()%750)+6728;
-    rocket.e = (((float)rand() / (RAND_MAX))%(((1-(((float)6728)/rocket.a))-((((float)7478)/rocket.a)-1)))+(1-(((float)6728)/rocket.a));
-    rocket.i = ((float)rand() / (RAND_MAX))%6.28318530717959;
-    rocket.Om = ((float)rand() / (RAND_MAX))%6.28318530717959;
-    rocket.om = ((float)rand() / (RAND_MAX))%6.28318530717959;
+    rocket.e = fmodf(((float)rand() / (RAND_MAX)),(((1-(((float)6728)/rocket.a))-((((float)7478)/rocket.a)-1)))+(1-(((float)6728)/rocket.a)));//(((float)rand() / (RAND_MAX))%(((1-(((float)6728)/rocket.a))-((((float)7478)/rocket.a)-1)))+(1-(((float)6728)/rocket.a));
+    rocket.i = fmodf(((float)rand() / (RAND_MAX)),6.28318530717959);//((float)rand() / (RAND_MAX))%6.28318530717959;
+    rocket.Om = fmodf(((float)rand() / (RAND_MAX)),6.28318530717959); //((float)rand() / (RAND_MAX))%6.28318530717959;
+    rocket.om = fmodf(((float)rand() / (RAND_MAX)),6.28318530717959);//((float)rand() / (RAND_MAX))%6.28318530717959;
     rocket.numSat = rand()%50;
     temp.launches[i] = rocket;
     temp.numSatTotal = temp.numSatTotal + rocket.numSat;
@@ -172,7 +175,7 @@ int calculateFitness(constillation population[], float fitness[], int size, city
   int champInx = 0;
   float champFit = 0;
   for (int i = 0; i < size; i++) {
-    fitInt[i] = calcFitnessOfConst(population[i], city , length);
+    fitInt[i] = calcFitnessOfConst(population[i], city, length);
     if( fitInt[i] > champFit){
       champFit = fitInt[i];
       champInx = i;
@@ -187,7 +190,7 @@ float calcFitnessOfConst(constillation element, city citys[],  int length){
   int profit =0;
   float fit =0;
   short timestep = 60;
-  short timespan = 86400;
+  int timespan = 86400;
   float a=0;
   float e=0;
   float i=0;
@@ -195,13 +198,13 @@ float calcFitnessOfConst(constillation element, city citys[],  int length){
   float om=0;
   short numSat=0;
   short Re = 6378;
-  lanch rocket;
+  launch rocket;
   int MU = 398600;
   float J2 = 1.087*(10^-3);
   float maxAngle = 0.261799387799149;
   float n=0;
   float p=0;
-  float rotRate = -7.29211505392569(10^-05);
+  float rotRate = -7.29211505392569*(10^-05);
   float OmegaDot = 0;
   float wDot = 0;
   float w = 0;
@@ -226,10 +229,10 @@ float calcFitnessOfConst(constillation element, city citys[],  int length){
     Om = rocket.Om;
     om = rocket.om;
     numSats = rocket.numSat;
-    n = sqrt(MU/(a^3));
-    p = a*(1-(e^2));
-    OmegaDot = -1.5*J2*sqrt(MU/(a^3))*(Re/p)*cos(i);
-    wDot = 0.75*n*J2*((Re/(p))^2)*(2-(2.5*(sin(i)^2)));
+    n = sqrt(MU/(a*a*a));
+    p = a*(1-(e*e));
+    OmegaDot = -1.5*J2*sqrt(MU/(a*a*a))*(Re/p)*cos(i);
+    wDot = 0.75*n*J2*((Re/(p))*(Re/(p)))*(2-(2.5*(sin(i)*sin(i))));
     P = 6.28318530717959/n;
     // Find
     for (size_t t = 0; t < timespan; t+=timestep) {
@@ -258,7 +261,7 @@ float calcFitnessOfConst(constillation element, city citys[],  int length){
         rx = (R*cos(j)*cos(f)*cos(w)*cos(Omega))-(cos(i)*R*cos(j)*cos(f)*sin(w)*sin(Omega))+(R*cos(j)*sin(f)*cos(w)*sin(Omega))+(cos(i)*R*cos(j)*sin(f)*sin(w)*cos(Omega))-(R*sin(j)*cos(f)*sin(w)*cos(Omega))-(cos(i)*R*sin(j)*cos(f)*cos(w)*sin(Omega))+(cos(i)*R*sin(j)*sin(f)*cos(w)*cos(Omega))-(R*sin(j)*sin(f)*sin(w)*sin(Omega));
         ry = (-R*cos(j)*cos(f)*sin(w)*cos(Omega))-(cos(i)*R*cos(j)*cos(w)*sin(Omega))+(cos(i)*R*cos(j)*sin(f)*cos(w)*cos(Omega))-(R*cos(j)*sin(f)*sin(w)*sin(Omega))-(R*sin(j)*cos(f)*cos(w)*cos(Omega))+(cos(i)*R*sin(j)*cos(f)*sin(w)*sin(Omega))-(R*sin(j)*sin(f)*cos(w)*sin(Omega))-(cos(i)*R*sin(j)*sin(f)*sin(w)*cos(Omega));
         rz = (sin(i)*R*cos(j)*sin(Omega))-(sin(i)*R*sin(j)*cos(Omega));
-        valSum = valSum + (valueAtPoint(rx,ry,rz,citys,length));
+        valSum = valSum + valueAtPoint(rx,ry,rz,citys,length,maxAngle);
       }
     }
   }
@@ -287,12 +290,12 @@ float valueAtPoint(float x, float y, float z, city citys[],  int length, float m
     vecy = y - cy;
     vecz = z - cz;
     //City hat
-    norm = sqrt((cx^2)+(cy^2)+(cz^2));
+    norm = sqrt((cx*cx)+(cy*cy)+(cz*cz));
     cx = cx/norm;
     cy = cy/norm;
     cz = cz/norm;
     //find vechat
-    norm = sqrt((vecx^2)+(vecy^2)+(vecz^2));
+    norm = sqrt((vecx*vecx)+(vecy*vecy)+(vecz*vecz));
     vecx = vecx/norm;
     vecy = vecy/norm;
     vecz = vecz/norm;
@@ -332,8 +335,8 @@ void buildMatingPool(float fitnessPer[], int parents[], int arrySize, int factor
 
 }
 
-double sumArryD(double arry[], int arrySize){
-  double total = 0;
+float sumArryD(float arry[], int arrySize){
+  float total = 0;
   for (size_t i = 0; i < arrySize; i++) {
     total = total + arry[i];
   }
@@ -349,7 +352,7 @@ constillation breed(constillation parent1, constillation parent2){
   for (size_t i = 0; i < child.numLaunches; i++) {
     if ((parent1.numLaunches<=i)&&(parent2.numLaunches<=i)) {
       child.launches[i].a = (parent1.launches[i].a+parent2.launches[i].a)/2;
-      child.launches[i].e = ((parent1.launches[i].e+parent2.launches[i].e)/2)%(((1-(((float)6728)/child.launches[i].a))-((((float)7478)/child.launches[i].a)-1)))+(1-(((float)6728)/child.launches[i].a));//Confine e to keep within peramiters
+      child.launches[i].e = fmodf(((parent1.launches[i].e+parent2.launches[i].e)/2),(((1-(((float)6728)/child.launches[i].a))-((((float)7478)/child.launches[i].a)-1)))+(1-(((float)6728)/child.launches[i].a)));//((parent1.launches[i].e+parent2.launches[i].e)/2)%(((1-(((float)6728)/child.launches[i].a))-((((float)7478)/child.launches[i].a)-1)))+(1-(((float)6728)/child.launches[i].a));//Confine e to keep within peramiters
       child.launches[i].i = (parent1.launches[i].i+parent2.launches[i].i)/2;
       child.launches[i].Om = (parent1.launches[i].Om+parent2.launches[i].Om)/2;
       child.launches[i].om = (parent1.launches[i].om+parent2.launches[i].om)/2;
@@ -357,10 +360,10 @@ constillation breed(constillation parent1, constillation parent2){
     }else if((parent2.numLaunches>=i)){
       //make a random launch set
       rocket.a = (rand()%750)+6728;
-      rocket.e = (((float)rand() / (RAND_MAX))%(((1-(((float)6728)/rocket.a))-((((float)7478)/rocket.a)-1)))+(1-(((float)6728)/rocket.a));
-      rocket.i = ((float)rand() / (RAND_MAX))%6.28318530717959;
-      rocket.Om = ((float)rand() / (RAND_MAX))%6.28318530717959;
-      rocket.om = ((float)rand() / (RAND_MAX))%6.28318530717959;
+      rocket.e = fmodf(((float)rand() / (RAND_MAX)),(((1-(((float)6728)/rocket.a))-((((float)7478)/rocket.a)-1)))+(1-(((float)6728)/rocket.a)));//(((float)rand() / (RAND_MAX))%(((1-(((float)6728)/rocket.a))-((((float)7478)/rocket.a)-1)))+(1-(((float)6728)/rocket.a));
+      rocket.i = fmodf(((float)rand() / (RAND_MAX)),6.28318530717959);//((float)rand() / (RAND_MAX))%6.28318530717959;
+      rocket.Om = fmodf(((float)rand() / (RAND_MAX)),6.28318530717959); //((float)rand() / (RAND_MAX))%6.28318530717959;
+      rocket.om = fmodf(((float)rand() / (RAND_MAX)),6.28318530717959);//((float)rand() / (RAND_MAX))%6.28318530717959;
       rocket.numSat = rand()%50;
       //breed with the valid parent: parent 2
       child.launches[i].a = (rocket.a+parent2.launches[i].a)/2;
@@ -430,7 +433,7 @@ genSummery runGeneration(constillation population[], int populationSize, int mut
       parentTempB = rand()%populationSize;
       parentTempA = rand()%populationSize;
     }
-    children[i] = breed(population[parentTempA], population[parentTempB], 0); //1 for midpoint, 0 for random
+    children[i] = breed(population[parentTempA], population[parentTempB]);
 
   }
 
