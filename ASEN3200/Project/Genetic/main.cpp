@@ -66,7 +66,7 @@ float valueAtPoint(float x, float y, float z, city citys[],  int length, float m
 
 int main(){
   srand(time(0));
-  int populationSize = 10;
+  int populationSize = 25;
   constillation population[populationSize];
   genSummery Current;
   int genCount = 0;
@@ -107,9 +107,9 @@ int main(){
 
     buildPopulation(population, populationSize);
 
-    while ((genCount < 100)) { //can add a target here so it will stop when it meets a goal
+    while ((genCount < 1000)) { //can add a target here so it will stop when it meets a goal
       genCount++;
-      Current = runGeneration(population, populationSize, 2, fitnessPer,  citys , length);
+      Current = runGeneration(population, populationSize, 5, fitnessPer,  citys , length);
       std::cout << "New Gen: " << genCount << '\n';
       /*
       cout << "Gen: " << genCount <<" Fitness Max: " << Current.fitness  <<" Text: " << Current.text << '\n';
@@ -119,24 +119,25 @@ int main(){
       }
       myfile << "\n";
       */
+      myfile << genCount << "," << Current.fitness << "\n";
     }
     //endTime = clock();
     //execTime = (double)(endTime-startTime)/CLOCKS_PER_SEC;
 
     genTotal = genTotal + genCount;
   //  myfile << execTime << ",";
-    //myfile.close();
-
+  myfile.close();
+  myfile.open("Champ.csv");
   //  myfile.close();
   endTime = clock();
   execTime = (double)(endTime-startTime)/CLOCKS_PER_SEC;
-  cout << "Ave execution time: " << execTime/1 << " GenAverage: " << genTotal/1.0 <<endl;
+  cout << "Ave execution time: " << execTime/60 << " minutes." <<endl;
 
   //Current.val.numLaunches
   for (size_t i = 0; i < Current.val.numLaunches; i++) {
-    myfile << i << " , " << Current.val.launches[i].a << " , " << Current.val.launches[i].e << " , " << Current.val.launches[i].i << " , " << Current.val.launches[i].om << " , " << Current.val.launches[i].Om << " , " << Current.val.launches[i].numSat << "\n";
+    myfile << i << " , " << Current.val.launches[i].a << " , " << Current.val.launches[i].e << " , " << Current.val.launches[i].i << " , " << Current.val.launches[i].om << " , " << Current.val.launches[i].Om << " , " << (int)Current.val.launches[i].numSat << "\n";
   }
-
+  myfile.close();
   return 0;
 }
 
@@ -177,13 +178,13 @@ int calculateFitness(constillation population[], float fitness[], int size, city
   //size is population size
   // length is size of citys
   //citys has population and possition of each city.
-  float fitInt[size];
+
   int champInx = 0;
   float champFit = 0;
   for (int i = 0; i < size; i++) {
-    fitInt[i] = calcFitnessOfConst(population[i], citys, length);
-    if( fitInt[i] > champFit){
-      champFit = fitInt[i];
+    fitness[i] = calcFitnessOfConst(population[i], citys, length);
+    if( fitness[i] > champFit){
+      champFit = fitness[i];
       champInx = i;
     }
   }
