@@ -15,7 +15,7 @@ elevation_limit = 15*(pi/180);
 
 %% Import data
 %Load in satellites
-[num_launches, num_spacecraft, satellite_list] = loadConstellation("example_constellation.json"); 
+[num_launches, num_spacecraft, satellite_list] = loadConstellation("Constilation.json"); 
 %Load coast and convert to rad
 load("world_coastline_low.txt") 
 xCoast = world_coastline_low(:,1)*(pi/180);
@@ -25,7 +25,7 @@ yCoast = world_coastline_low(:,2)*(pi/180);
 citys = readtable("worldcities.csv");
 
 %Allow for loading less citys if ':' is replaced with a number
-citysOfWorthC = (citys(1:30,3:4));
+citysOfWorthC = (citys(1:500,3:4));
 citysOfWorth = zeros(size(citysOfWorthC));
 
 %Convert city possitions to rad then to 3d cords.
