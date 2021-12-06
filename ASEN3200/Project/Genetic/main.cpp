@@ -132,6 +132,11 @@ int main(){
   execTime = (double)(endTime-startTime)/CLOCKS_PER_SEC;
   cout << "Ave execution time: " << execTime/1 << " GenAverage: " << genTotal/1.0 <<endl;
 
+  //Current.val.numLaunches
+  for (size_t i = 0; i < Current.val.numLaunches; i++) {
+    myfile << i << " , " << Current.val.launches[i].a << " , " << Current.val.launches[i].e << " , " << Current.val.launches[i].i << " , " << Current.val.launches[i].om << " , " << Current.val.launches[i].Om << " , " << Current.val.launches[i].numSat << "\n";
+  }
+
   return 0;
 }
 
@@ -254,9 +259,8 @@ float calcFitnessOfConst(constillation element, city citys[],  int length){
           E = (n*tOff)-(e/2);
         }
         ratio = 1;
-        while (abs(ratio)>(0.0000001)&&(numSats<20)) {
+        while (abs(ratio)>(0.00000001)&&(numSats<20)) {
           ratio = (E - e*sin(E) - (n*tOff))/(1 - e*cos(E));
-
           E = E-ratio;
           numSats++;
         }
