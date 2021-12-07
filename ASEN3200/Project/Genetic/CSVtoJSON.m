@@ -19,7 +19,7 @@ for i = 1:a
     
 end
 
-saveJSONfile(constellation,"Constilation.json");
+saveJSONfile(constellation,"Constilation7L8.json");
 
 function saveJSONfile(data, jsonFileName)
 % saves the values in the structure 'data' to a file in JSON format.

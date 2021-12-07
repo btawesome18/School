@@ -66,7 +66,7 @@ float valueAtPoint(float x, float y, float z, city citys[],  int length, float m
 
 int main(){
   srand(time(0));
-  int populationSize = 25;
+  int populationSize = 40;
   constillation population[populationSize];
   genSummery Current;
   int genCount = 0;
@@ -107,9 +107,9 @@ int main(){
 
     buildPopulation(population, populationSize);
 
-    while ((genCount < 1000)) { //can add a target here so it will stop when it meets a goal
+    while ((genCount < 10)) { //can add a target here so it will stop when it meets a goal
       genCount++;
-      Current = runGeneration(population, populationSize, 6, fitnessPer,  citys , length);
+      Current = runGeneration(population, populationSize, 40, fitnessPer,  citys , length);
       std::cout << "New Gen: " << genCount << '\n';
       /*
       cout << "Gen: " << genCount <<" Fitness Max: " << Current.fitness  <<" Text: " << Current.text << '\n';
@@ -163,8 +163,8 @@ constillation randCosntilation(){
     //r must be between 6728 and 7478, 750km range
     rocket.a = (rand()%750)+6728;
     rocket.e = fmodf(((float)rand() / (RAND_MAX)),(((1-(((float)6728)/rocket.a))-((((float)7478)/rocket.a)-1)))+(1-(((float)6728)/rocket.a)));//(((float)rand() / (RAND_MAX))%(((1-(((float)6728)/rocket.a))-((((float)7478)/rocket.a)-1)))+(1-(((float)6728)/rocket.a));
-    rocket.i = fmodf(((float)rand() / (RAND_MAX)),6.28318530717959);//((float)rand() / (RAND_MAX))%6.28318530717959;
-    rocket.Om = fmodf(((float)rand() / (RAND_MAX)),6.28318530717959); //((float)rand() / (RAND_MAX))%6.28318530717959;
+    rocket.i = fmodf(((float)rand() / (RAND_MAX)),(1.57079632679490*2));//((float)rand() / (RAND_MAX))%6.28318530717959;
+    rocket.Om = i*(6.28318530717959/count);  //rocket.Om = fmodf(((float)rand() / (RAND_MAX)),6.28318530717959); //((float)rand() / (RAND_MAX))%6.28318530717959;
     rocket.om = fmodf(((float)rand() / (RAND_MAX)),6.28318530717959);//((float)rand() / (RAND_MAX))%6.28318530717959;
     rocket.numSat = rand()%50;
     temp.launches[i] = rocket;
@@ -371,37 +371,37 @@ constillation breed(constillation parent1, constillation parent2){
       child.launches[i].a = (parent1.launches[i].a+parent2.launches[i].a)/2;
       child.launches[i].e = fmodf(((parent1.launches[i].e+parent2.launches[i].e)/2),(((1-(((float)6728)/child.launches[i].a))-((((float)7478)/child.launches[i].a)-1)))+(1-(((float)6728)/child.launches[i].a)));//((parent1.launches[i].e+parent2.launches[i].e)/2)%(((1-(((float)6728)/child.launches[i].a))-((((float)7478)/child.launches[i].a)-1)))+(1-(((float)6728)/child.launches[i].a));//Confine e to keep within peramiters
       child.launches[i].i = (parent1.launches[i].i+parent2.launches[i].i)/2;
-      child.launches[i].Om = (parent1.launches[i].Om+parent2.launches[i].Om)/2;
+      child.launches[i].Om = ((6.28318530717959/child.numLaunches)*i);//child.launches[i].Om = (parent1.launches[i].Om+parent2.launches[i].Om)/2;
       child.launches[i].om = (parent1.launches[i].om+parent2.launches[i].om)/2;
       child.launches[i].numSat = (parent1.launches[i].numSat+parent2.launches[i].numSat)/2;
     }else if((parent2.numLaunches>=i)){
       //make a random launch set
       rocket.a = (rand()%750)+6728;
       rocket.e = fmodf(((float)rand() / (RAND_MAX)),(((1-(((float)6728)/rocket.a))-((((float)7478)/rocket.a)-1)))+(1-(((float)6728)/rocket.a)));//(((float)rand() / (RAND_MAX))%(((1-(((float)6728)/rocket.a))-((((float)7478)/rocket.a)-1)))+(1-(((float)6728)/rocket.a));
-      rocket.i = fmodf(((float)rand() / (RAND_MAX)),6.28318530717959);//((float)rand() / (RAND_MAX))%6.28318530717959;
-      rocket.Om = fmodf(((float)rand() / (RAND_MAX)),6.28318530717959); //((float)rand() / (RAND_MAX))%6.28318530717959;
+      rocket.i = fmodf(((float)rand() / (RAND_MAX)),(1.57079632679490*2));//((float)rand() / (RAND_MAX))%6.28318530717959;
+      rocket.Om = (6.28318530717959/child.numLaunches)*i; //fmodf(((float)rand() / (RAND_MAX)),6.28318530717959); //((float)rand() / (RAND_MAX))%6.28318530717959;
       rocket.om = fmodf(((float)rand() / (RAND_MAX)),6.28318530717959);//((float)rand() / (RAND_MAX))%6.28318530717959;
       rocket.numSat = rand()%50;
       //breed with the valid parent: parent 2
       child.launches[i].a = (rocket.a+parent2.launches[i].a)/2;
       child.launches[i].e = fmodf(((rocket.e+parent2.launches[i].e)/2),(((1-(((float)6728)/child.launches[i].a))-((((float)7478)/child.launches[i].a)-1)))+(1-(((float)6728)/child.launches[i].a)));//((rocket.e+parent2.launches[i].e)/2)%(((1-(((float)6728)/child.launches[i].e))-((((float)7478)/child.launches[i].e)-1)))+(1-(((float)6728)/child.launches[i].e));//Confine e to keep within peramiters
       child.launches[i].i = (rocket.i+parent2.launches[i].i)/2;
-      child.launches[i].Om = (rocket.Om+parent2.launches[i].Om)/2;
+      child.launches[i].Om = ((6.28318530717959/child.numLaunches)*i);////child.launches[i].Om = (rocket.Om+parent2.launches[i].Om)/2;
       child.launches[i].om = (rocket.om+parent2.launches[i].om)/2;
       child.launches[i].numSat = (rocket.numSat+parent2.launches[i].numSat)/2;
     }else{
       //make a random launch set
       rocket.a = (rand()%750)+6728;
       rocket.e = fmodf(((float)rand() / (RAND_MAX)),(((1-(((float)6728)/rocket.a))-((((float)7478)/rocket.a)-1)))+(1-(((float)6728)/rocket.a)));//(((float)rand() / (RAND_MAX))%(((1-(((float)6728)/rocket.a))-((((float)7478)/rocket.a)-1)))+(1-(((float)6728)/rocket.a));
-      rocket.i = fmodf(((float)rand() / (RAND_MAX)),6.28318530717959);//((float)rand() / (RAND_MAX))%6.28318530717959;
-      rocket.Om = fmodf(((float)rand() / (RAND_MAX)),6.28318530717959); //((float)rand() / (RAND_MAX))%6.28318530717959;
+      rocket.i = fmodf(((float)rand() / (RAND_MAX)),(1.57079632679490*2));//((float)rand() / (RAND_MAX))%6.28318530717959;
+      rocket.Om = (6.28318530717959/child.numLaunches)*i; //rocket.Om = fmodf(((float)rand() / (RAND_MAX)),6.28318530717959); //((float)rand() / (RAND_MAX))%6.28318530717959;
       rocket.om = fmodf(((float)rand() / (RAND_MAX)),6.28318530717959);//((float)rand() / (RAND_MAX))%6.28318530717959;
       rocket.numSat = rand()%50;
       //breed with the valid parent: parent 1
       child.launches[i].a = (rocket.a+parent1.launches[i].a)/2;
       child.launches[i].e = fmodf(((rocket.e+parent1.launches[i].e)/2),(((1-(((float)6728)/child.launches[i].e))-((((float)7478)/child.launches[i].e)-1)))+(1-(((float)6728)/child.launches[i].e)));//((rocket.e+parent1.launches[i].e)/2)%(((1-(((float)6728)/child.launches[i].e))-((((float)7478)/child.launches[i].e)-1)))+(1-(((float)6728)/child.launches[i].e));//Confine e to keep within peramiters
       child.launches[i].i = (rocket.i+parent1.launches[i].i)/2;
-      child.launches[i].Om = (rocket.Om+parent1.launches[i].Om)/2;
+      child.launches[i].Om = ((6.28318530717959/child.numLaunches)*i);//child.launches[i].Om = (rocket.Om+parent1.launches[i].Om)/2;
       child.launches[i].om = (rocket.om+parent1.launches[i].om)/2;
       child.launches[i].numSat = (rocket.numSat+parent1.launches[i].numSat)/2;
     }
@@ -420,6 +420,7 @@ void causeMutation(constillation population[], int populationSize, int mutationR
 
     if(round(mutationRate*10) >= (rand()%1000)){
       temp = randCosntilation();//breed(temp, randCosntilation());
+      //std::cout << "Mutate" << '\n';
     }
 
     population[i] = temp;
@@ -439,7 +440,7 @@ genSummery runGeneration(constillation population[], int populationSize, int mut
   Champ.fitness = fitness[champIndex];
   Champ.val = population[champIndex];
   Champ.aveFit = calcAve(fitness,populationSize); // They want this done in matlab.
-  /*
+
   buildMatingPool(fitness, parentsIndex1, populationSize, 10000);
   buildMatingPool(fitness, parentsIndex2, populationSize, 10000);
 
@@ -456,8 +457,10 @@ genSummery runGeneration(constillation population[], int populationSize, int mut
   }
 
 
+
+
+
   causeMutation(population, populationSize, mutationRate);
-  */
 
   population[0] = Champ.val;
 
