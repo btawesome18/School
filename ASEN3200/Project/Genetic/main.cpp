@@ -109,7 +109,7 @@ int main(){
 
     while ((genCount < 1000)) { //can add a target here so it will stop when it meets a goal
       genCount++;
-      Current = runGeneration(population, populationSize, 5, fitnessPer,  citys , length);
+      Current = runGeneration(population, populationSize, 6, fitnessPer,  citys , length);
       std::cout << "New Gen: " << genCount << '\n';
       /*
       cout << "Gen: " << genCount <<" Fitness Max: " << Current.fitness  <<" Text: " << Current.text << '\n';
@@ -170,6 +170,10 @@ constillation randCosntilation(){
     temp.launches[i] = rocket;
     temp.numSatTotal = temp.numSatTotal + rocket.numSat;
   }
+  if(temp.numSatTotal<100){
+    temp = randCosntilation();
+  }
+
   return temp;
 }
 
@@ -415,7 +419,7 @@ void causeMutation(constillation population[], int populationSize, int mutationR
 
 
     if(round(mutationRate*10) >= (rand()%1000)){
-      breed(temp, randCosntilation());
+      temp = randCosntilation();//breed(temp, randCosntilation());
     }
 
     population[i] = temp;
@@ -435,6 +439,7 @@ genSummery runGeneration(constillation population[], int populationSize, int mut
   Champ.fitness = fitness[champIndex];
   Champ.val = population[champIndex];
   Champ.aveFit = calcAve(fitness,populationSize); // They want this done in matlab.
+  /*
   buildMatingPool(fitness, parentsIndex1, populationSize, 10000);
   buildMatingPool(fitness, parentsIndex2, populationSize, 10000);
 
@@ -451,13 +456,16 @@ genSummery runGeneration(constillation population[], int populationSize, int mut
   }
 
 
-  causeMutation(children, populationSize, mutationRate);
+  causeMutation(population, populationSize, mutationRate);
+  */
 
-  children[0] = Champ.val;
+  population[0] = Champ.val;
 
+  /*
   for (int i = 0; i < populationSize; i++) {
     population[i] = children[i];
   }
+  */
 
   return Champ;
 }

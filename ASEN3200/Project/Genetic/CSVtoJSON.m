@@ -1,4 +1,4 @@
-constellation.companyName = "Satenetics";
+constellation.companyName = "Beyond Space";
 constellation.companyExecutives = ['A','B','C'];
 load("Champ.csv");
 [a,~] =size(Champ);
