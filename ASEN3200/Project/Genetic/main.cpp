@@ -456,15 +456,16 @@ genSummery runGeneration(constillation population[], int populationSize, int mut
 
 
 
-  causeMutation(population, populationSize, mutationRate);
+  causeMutation(children, populationSize, mutationRate);
 
-  population[0] = Champ.val;
 
-  /*
+
+
   for (int i = 0; i < populationSize; i++) {
     population[i] = children[i];
   }
-  */
+
+  population[0] = Champ.val;
 
   return Champ;
 }
