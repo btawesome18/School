@@ -15,7 +15,7 @@ elevation_limit = 15*(pi/180);
 
 %% Import data
 %Load in satellites
-[num_launches, num_spacecraft, satellite_list] = loadConstellation("Constellation_Final.json"); 
+[num_launches, num_spacecraft, satellite_list] = loadConstellation("Constilation7L8.json"); 
 %Load coast and convert to rad
 load("world_coastline_low.txt") 
 xCoast = world_coastline_low(:,1)*(pi/180);
@@ -31,8 +31,8 @@ citysOfWorth = zeros(size(citysOfWorthC));
 pop = citys{:,10};
 %Convert city possitions to rad then to 3d cords.
 for i = 1:height(citysOfWorthC)
-    citysOfWorthX = citysOfWorthC{i,1}*(pi/180); %citysOfWorthX = str2double(citysOfWorthC(i,1).lat{1})*(pi/180); %Reading in the csv needed lots of handeling and to be casted to double.
-    citysOfWorthY = citysOfWorthC{i,2}*(pi/180);%citysOfWorthY = str2double(citysOfWorthC(i,2).lng{1})*(pi/180);
+    %citysOfWorthX = str2double(citysOfWorthC(i,1).lat{1})*(pi/180); %Reading in the csv needed lots of handeling and to be casted to double.
+    %citysOfWorthY = str2double(citysOfWorthC(i,2).lng{1})*(pi/180);
     [Cx(i),Cy(i),Cz(i)]=sph2cart(citysOfWorthY,citysOfWorthX,Re);
 end
 
@@ -92,7 +92,6 @@ for i = 1:length(satellite_list) %Other loop cover each satellite
     
 end
 
-LosSum = sum(satTime,2)*30;
-coeff = pop/(86400);
-Val = sum((coeff.*LosSum))
+
+%coeff = pop/(tf-t0)
 %satTime has amount of coverage in terms of satTime(city,time) time indexes

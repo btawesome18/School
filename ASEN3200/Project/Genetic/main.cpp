@@ -6,10 +6,6 @@
 #include <fstream>
 #include <vector>
 
-
-//#include<time.h>
-
-
 using namespace std;
 
 

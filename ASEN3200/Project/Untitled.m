@@ -22,19 +22,19 @@ elevation_limit = 15; %deg
 %% Load Data
 [num_launches, num_spacecraft, satellite_list, data] = loadConstellation('Constellation_Final.json');
 cityData = readtable('worldcities.csv');
-%cities = table2cell(cityData(:,1));
+cities = table2cell(cityData(:,1));
 cityData = cityData(:,[4 3 10]); % only look at long,latt,population
 coastData = load('world_coastline_low.txt');
 
 % change numCities variable to 'height(cityData)' if you want to see all
 % cities
-numCities = 500;%height(cityData); % number of cities to analyze (height(cityData is all cities)
-usefulCityData = table2array(cityData(1:numCities,:));
+numCities = height(cityData); % number of cities to analyze (height(cityData is all cities)
+usefulCityData = table2array(cityData(:,:));
 
 long = deg2rad(usefulCityData(:,1));
 latt = deg2rad(usefulCityData(:,2));
 pop = usefulCityData(:,3);
-r_site = rEarth*[sin(latt), cos(latt).*sin(long), cos(latt).*cos(long)];
+% r_site = rEarth*[sin(latt), cos(latt).*sin(long), cos(latt).*cos(long)];
 
 %% Plot Earth 
 
@@ -66,44 +66,12 @@ numInLoS = zeros(length(t),numCities);
 for o = 1:num_spacecraft
     oe = satellite_list(o).oe0;
     x = ones(6,length(t));
-    inLine = zeros(length(t),numCities);
-    
-    % loop to iterate through time
-    for i = 1:length(t)   
-        propogated = propagateState(oe,t(i),t0,MU,J2,rEarth);
-        x(1,i) = propogated(1);
-        x(2,i) = propogated(2);
-        x(3,i) = propogated(3);
-        x(4,i) = propogated(4);
-        x(5,i) = propogated(5);
-        x(6,i) = propogated(6);
-        r_sc = x(1:3,i);
-        
-        % loop to iterate through each analyzed city
-        for k = 1:numCities
-            long = deg2rad(usefulCityData(k,1));
-            latt = deg2rad(usefulCityData(k,2));
-            long = long + omegaEarth*(t(i)-t0);
-            r_site = rEarth*[sin(latt), cos(latt)*sin(long), cos(latt)*cos(long)]'; % radius of city in ECI
-%             r_site = [xCities(k);yCities(k);zCities(k)];
-            inLine(i,k) = testLoS(r_site,r_sc,elevation_limit);
-    %         if inLine(i,k) == 1
-    %             plot3(r_site(1),r_site(2),r_site(3),'g');
-    %         else 
-    %             plot3(r_site(1),r_site(2),r_site(3),'r');
-    %         end
-        end
-        %numInLoS(i) = numInLoS(i) + nnz(inLine(i,:));
-        numInLoS(i,:) = numInLoS(i,:) + inLine(i,:); % Matrix of num SC seen by each analyzed city at t
-    end
-    plot3(x(1,:),x(2,:),x(3,:));
+    inLine = zeros(length(t),numCities);   
+    val = 0;
+    for i = 1:numCities
+        val = val+value(t(1), t(end), t(2)-t(1), pop(i), long(i), latt(i), oe, MU, J2, rEarth);
+    end   
 end
-hold off
-
-totInLoS = sum(numInLoS,2);
-figure;
-plot(t,totInLoS);
-
 
 %% Test Case
 % J2=1082.63*10^(-6);
@@ -119,6 +87,22 @@ plot(t,totInLoS);
 % x=propagateState(oe0,1000,0,MU,J2,Re)
 
 %% Functions
+%% value
+function val = value(t0, tf, dt, pop, long, latt, oe0, MU, J2, rEarth)
+    coeff = pop/(tf-t0);     
+    los = 0;
+    omegaEarth = -2*pi/(23*3600 + 56*60 + 4.1);
+    for t = t0:dt:tf
+        x = propagateState(oe0, t, t0, MU, J2, rEarth);
+        r_sc = x(1:3);
+        long = long + omegaEarth*(t-t0);
+        r_site = rEarth*[sin(latt), cos(latt)*sin(long), cos(latt)*cos(long)]';
+        los = los + testLoS(r_site, r_sc, 15);
+    end
+    val = coeff*los;
+end
+
+
 %% Load JSON file
 function [num_launches, num_spacecraft, satellite_list, data] = loadConstellation(filename)
 %DESCRIPTOIN: Ingests constellation description .json file and parses it
