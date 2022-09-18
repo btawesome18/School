@@ -1,0 +1,367 @@
+%% ASEN 3113 Lab 2 Heat Conduction Lab
+% By Cannon Palmer, Brian Trybus, Ryan Jones, Jarrett Bartson, Rishi
+% Mayekar
+
+clear
+clc
+close all
+
+Samp1 = load('Aluminum_25V_240mA');
+Samp2 = load('Aluminum_28V_269mA');
+Samp3 = load('Brass_26V_245mA');
+Samp4 = load('Brass_29V_273mA');
+Samp5 = load('Steel_21V_192mA');
+
+name_vec = {'Aluminum 25V 240mA','Aluminum 28V 269mA','Brass 26V 245mA',...
+    'Brass 29V 273mA','Steel 21V 192mA'}; %Legend for data set
+
+%%%%%%%%%%
+% Columns
+% 1 = time
+% 2 = Th0
+% 3 = Th1
+% 4 = Th2
+% 5 = Th3
+% 6 = Th4
+% 7 = Th5
+% 8 = Th6
+% 9 = Th7
+% 10 = Th8
+%%%%%%%%%%
+
+%% Question 1
+
+positions = [0,1.375,1.875,2.375,2.875,3.375,3.875,4.375,4.875] * 0.0254; %Thermo cuple position in (m)
+
+ss_vec1 = Samp1(end,3:10);
+ss_vec2 = Samp2(end,3:10);
+ss_vec3 = Samp3(end,3:10);
+ss_vec4 = Samp4(end,3:10);
+ss_vec5 = Samp5(end,3:10);
+
+samp_vec = {Samp1, Samp2, Samp3, Samp4, Samp5};
+
+
+
+for j = 1:5
+    sample = samp_vec{j};
+    figure(1)
+    subplot(2,3,j)
+    plot(sample(:,1),sample(:,3))
+    hold on
+    xlabel("Time (s)")
+    ylabel("Tempiture (C)")
+    for i = 1:7
+        plot(sample(:,1),sample(:,i+2))
+    end
+    title(name_vec(j));
+    hold off
+end
+sgtitle('Experimental Data: Temp vs Time')
+
+%Steady state Temp with polyfit and anylitical
+figure(2)
+title("Steady State Temperature vs Position: Experimental vs Steady State")
+xlabel("Position (m)")
+ylabel("Tempiture (C)")
+hold on
+%Plot Tempiture vs possition at steady as points
+
+plot(positions(2:end),ss_vec1,'bo') 
+plot(positions(2:end),ss_vec2,'ro')
+plot(positions(2:end),ss_vec3,'go')
+plot(positions(2:end),ss_vec4,'ko')
+plot(positions(2:end),ss_vec5,'mo')
+
+legend(name_vec);
+%Then polyfits a line plots solid same color
+[A,deltaA,muA] = polyfit(positions(2:end),ss_vec1,1);
+plot(positions,A(1)*positions + A(2),'b','HandleVisibility','off')
+
+[B,deltaB,muB] = polyfit(positions(2:end),ss_vec2,1);
+plot(positions,B(1)*positions + B(2),'r','HandleVisibility','off')
+
+[C,deltaC,muC] = polyfit(positions(2:end),ss_vec3,1);
+plot(positions,C(1)*positions + C(2),'g','HandleVisibility','off')
+
+[D,deltaD,muD] = polyfit(positions(2:end),ss_vec4,1);
+plot(positions,D(1)*positions + D(2),'k','HandleVisibility','off')
+
+[E,deltaE,muE] = polyfit(positions(2:end),ss_vec5,1);
+plot(positions,E(1)*positions + E(2),'m','HandleVisibility','off')
+%hold off
+
+%Calculates anylitical slope
+Area = (0.5 * 0.0254).^2 * pi; %area in m^2
+kAl = 130;
+kBr = 115;
+kSt = 16.2;
+Qin1 = 25 * 0.24;
+Qin2 = 28 * 0.269;
+Qin3 = 26 * 0.245;
+Qin4 = 29 * 0.273;
+Qin5 = 21 * 0.192;
+
+slope1 = (Qin1 / (Area * kAl));%/ 1.5;
+slope2 = (Qin2 / (Area * kAl));% / 1.5;
+slope3 = Qin3 / (Area * kBr);
+slope4 = Qin4 / (Area * kBr);
+slope5 = (Qin5 / (Area * kSt));% / 1.8;
+
+%Plots Anylitical steady state in dotted lines.
+plot(positions, A(2) + positions * slope1,'b--','HandleVisibility','off')
+plot(positions, B(2) + positions * slope2,'r--','HandleVisibility','off')
+plot(positions, C(2) + positions * slope3,'g--','HandleVisibility','off')
+plot(positions, D(2) + positions * slope4,'k--','HandleVisibility','off')
+plot(positions, E(2) + positions * slope5,'m--','HandleVisibility','off')
+hold off
+
+%% Question 2
+
+%calulate difusisvity
+alphaAl = kAl / (2810 * 960); %units in m^2 / s
+alphaBr = kBr / (8500 * 380); %units in m^2 / s
+alphaSt = kSt / (8000 * 500); %units in m^2 / s
+%Puts difusisvity in a vector
+alpha_vec = [alphaAl, alphaAl, alphaBr, alphaBr, alphaSt];
+alpha_vec2 = [alphaAl/2.5, alphaAl/2.5, alphaBr/4, alphaBr/4, alphaSt/1.5];
+%Anyilitical slope into vector
+slope_vec = [slope1, slope2, slope3, slope4, slope5];
+slope_vec2 = [slope1/1.7, slope2/1.7, slope3, slope4, slope5/1.75];
+slope_vec3 = [slope1/1.6, slope2/1.6, slope3, slope4, slope5/2.1];
+L = 5 * 0.0254; %Length if bar in m
+T0_vec = [A(2),B(2),C(2),D(2),E(2)];
+
+error_SS = zeros(5,8);
+error_SS_percent = zeros(5,8);
+
+Q1_error = zeros(8,15);
+Q2_error = zeros(8,15);
+Q3_error = zeros(8,15);
+Q4_error = zeros(8,15);
+
+for j = 1:5 %Goes by sample and updates figures 3-6
+    num = 100;
+    x = positions(2:end);
+    T0 = T0_vec(j);
+    sample = samp_vec{j};
+    temp_vec = zeros(num,length(positions(2:end)));
+    temp_vec2 = zeros(num,length(positions(2:end)));
+    temp_vec3 = zeros(num,length(positions(2:end)));
+    temp_vec4 = zeros(num,length(positions(2:end)));
+    t_vec = linspace(sample(1,1),sample(end,1),num);
+    for i = 1:num
+        temp_vec(i,:) = u_xt(slope_vec(j),alpha_vec(j),L,x,T0,10,t_vec(i));
+        
+        temp_vec2(i,:) = u_xt(slope_vec2(j),alpha_vec(j),L,x,T0,10,t_vec(i));
+        %only adjusts the analytical slope in order to get the steady
+        %states within 1 degree of the experimental
+        
+        temp_vec3(i,:) = u_xt(slope_vec3(j),alpha_vec(j),L,x,sample(1,3:end),10,t_vec(i));
+        %Adjust the initial temperature distribution to be the same as the
+        %experimental solution, then adjust the slope for aluminum
+        %and steel to simulate additional heat loss and we have a good
+        %approximation, changing the initial temperature is also good for
+        %question 3
+        
+        temp_vec4(i,:) = u_xt(slope_vec3(j),alpha_vec2(j),L,x,sample(1,3:end),10,t_vec(i));
+    end
+
+    figure(3) %Analytical vs real
+    subplot(2,3,j)
+    hold on
+    plot(t_vec,temp_vec(:,1),'r')
+    plot(t_vec,temp_vec(:,2),'r','HandleVisibility','off')
+    plot(t_vec,temp_vec(:,3),'r','HandleVisibility','off')
+    plot(t_vec,temp_vec(:,4),'r','HandleVisibility','off')
+    plot(t_vec,temp_vec(:,5),'r','HandleVisibility','off')
+    plot(t_vec,temp_vec(:,6),'r','HandleVisibility','off')
+    plot(t_vec,temp_vec(:,7),'r','HandleVisibility','off')
+    plot(t_vec,temp_vec(:,8),'r','HandleVisibility','off')
+    hold off
+
+    figure(4)%Loss ajusted vs real
+    subplot(2,3,j)
+    hold on
+    plot(t_vec,temp_vec2(:,1),'r')
+    plot(t_vec,temp_vec2(:,2),'r','HandleVisibility','off')
+    plot(t_vec,temp_vec2(:,3),'r','HandleVisibility','off')
+    plot(t_vec,temp_vec2(:,4),'r','HandleVisibility','off')
+    plot(t_vec,temp_vec2(:,5),'r','HandleVisibility','off')
+    plot(t_vec,temp_vec2(:,6),'r','HandleVisibility','off')
+    plot(t_vec,temp_vec2(:,7),'r','HandleVisibility','off')
+    plot(t_vec,temp_vec2(:,8),'r','HandleVisibility','off')
+    hold off
+
+    figure(5) %T_0 adjusted
+    subplot(2,3,j)
+    hold on
+    plot(t_vec,temp_vec3(:,1),'r')
+    plot(t_vec,temp_vec3(:,2),'r','HandleVisibility','off')
+    plot(t_vec,temp_vec3(:,3),'r','HandleVisibility','off')
+    plot(t_vec,temp_vec3(:,4),'r','HandleVisibility','off')
+    plot(t_vec,temp_vec3(:,5),'r','HandleVisibility','off')
+    plot(t_vec,temp_vec3(:,6),'r','HandleVisibility','off')
+    plot(t_vec,temp_vec3(:,7),'r','HandleVisibility','off')
+    plot(t_vec,temp_vec3(:,8),'r','HandleVisibility','off')
+    hold off
+    
+    figure(6) %Diffusivity vs real
+    subplot(2,3,j)
+    hold on
+    plot(t_vec,temp_vec4(:,1),'r')
+    plot(t_vec,temp_vec4(:,2),'r','HandleVisibility','off')
+    plot(t_vec,temp_vec4(:,3),'r','HandleVisibility','off')
+    plot(t_vec,temp_vec4(:,4),'r','HandleVisibility','off')
+    plot(t_vec,temp_vec4(:,5),'r','HandleVisibility','off')
+    plot(t_vec,temp_vec4(:,6),'r','HandleVisibility','off')
+    plot(t_vec,temp_vec4(:,7),'r','HandleVisibility','off')
+    plot(t_vec,temp_vec4(:,8),'r','HandleVisibility','off')
+    hold off
+    
+    
+    for i = 3:6
+        figure(i) %Plots real
+        hold on
+        plot(sample(:,1),sample(:,3),'b')
+        plot(sample(:,1),sample(:,4),'b','HandleVisibility','off')
+        plot(sample(:,1),sample(:,5),'b','HandleVisibility','off')
+        plot(sample(:,1),sample(:,6),'b','HandleVisibility','off')
+        plot(sample(:,1),sample(:,7),'b','HandleVisibility','off')
+        plot(sample(:,1),sample(:,8),'b','HandleVisibility','off')
+        plot(sample(:,1),sample(:,9),'b','HandleVisibility','off')
+        plot(sample(:,1),sample(:,10),'b','HandleVisibility','off')
+        xlabel('Time (s)')
+        ylabel(['Temperature (' char(176) 'C)']) 
+        legend('Analytical','Experimental','Location','Best')
+        title(name_vec{j})
+        hold off
+    end
+    
+    for k = 1:8
+        Q1_error(k,3*j-2) = abs(sample(end,k+2)-temp_vec(end,k));
+        Q1_error(k,3*j-1) = convTime(sample,k+2);
+        Q1_error(k,3*j) = convTimeAny(temp_vec,t_vec,k);
+        
+        Q2_error(k,3*j-2) = abs(sample(end,k+2)-temp_vec2(end,k));
+        Q2_error(k,3*j-1) = Q1_error(k,3*j-1);
+        Q2_error(k,3*j) = convTimeAny(temp_vec2,t_vec,k);
+        
+        Q3_error(k,3*j-2) = abs(sample(end,k+2)-temp_vec3(end,k));
+        Q3_error(k,3*j-1) = Q1_error(k,3*j-1);
+        Q3_error(k,3*j) = convTimeAny(temp_vec3,t_vec,k);
+        
+        Q4_error(k,3*j-2) = abs(sample(end,k+2)-temp_vec4(end,k));
+        Q4_error(k,3*j-1) = Q1_error(k,3*j-1);
+        Q4_error(k,3*j) = convTimeAny(temp_vec4,t_vec,k);
+    end
+
+    error_SS(j,:) = abs(temp_vec(end,1:8) - sample(end,3:10));
+    error_SS_percent(j,:) = abs(100 * (temp_vec(end,1:8) - sample(end,3:10)) ./ sample(end,3:10));
+end
+figure(3)
+sgtitle('Analytical and Experimental Temperatures vs Time') 
+figure(4)
+sgtitle('Heat Loss Adjusted Analytical and Experimental Comparison')
+figure(5)
+sgtitle('Initial Temperature Adjusted Analytical and Experimental Comparison')
+figure(6)
+sgtitle('Thermal Diffusivity Adjusted Analytical and Experimental Comparison') 
+
+%% Question 3
+
+
+figure()
+hold on
+for i = 1:5
+    plot(positions(2:end),error_SS_percent(i,:),'o')
+end
+title('Percent Error Between Analytical and Experimental Steady State')
+xlabel('Thermocouple Position (m)')
+ylabel('Temperature Percent Error (%)')
+legend('Aluminum 25V 240mA','Aluminum 28V 269mA','Brass 26V 245mA',...
+    'Brass 29V 273mA','Steel 21V 192mA','Location','Best')
+hold off
+
+init_vec1 = Samp1(1,3:10);
+init_vec2 = Samp2(1,3:10);
+init_vec3 = Samp3(1,3:10);
+init_vec4 = Samp4(1,3:10);
+init_vec5 = Samp5(1,3:10);
+
+init_A = polyfit(positions(2:end),init_vec1,1);
+init_B = polyfit(positions(2:end),init_vec2,1);
+init_C = polyfit(positions(2:end),init_vec3,1);
+init_D = polyfit(positions(2:end),init_vec4,1);
+init_E = polyfit(positions(2:end),init_vec5,1);
+
+
+%% Question 5
+%I think we want to find the times at which we reach 1% error from the
+%steady state value
+L = 0.1905; %beam length in m
+f_Al = alphaAl / L^2;
+f_Br = alphaBr / L^2;
+f_St = alphaSt / L^2;
+% F0 = f_Al * 1200;
+times = zeros(5,1);
+for i = 1:5
+    sample = samp_vec{i};
+    times(i) = convTime(sample,10);
+end
+F0_vec(1:2) = f_Al * times(1:2);
+F0_vec(3:4) = f_Br * times(3:4);
+F0_vec(5) = f_St * times(5);
+
+t_smallL = F0_vec .* ((L/2).^2) ./ (alpha_vec);
+t_largeL = F0_vec .* ((L*2).^2) ./ (alpha_vec);
+
+t_smallAlpha = F0_vec .* L.^2 ./ (alpha_vec ./ 2);
+t_largeAlpha = F0_vec .* L.^2 ./ (alpha_vec .* 2);
+
+%% Functions
+
+function time = convTime(sample,row)
+%Time it takes for solution to get within 1% of steady
+    SS = mean(sample((end-10):end,row));
+    error = 100;
+    j = 1;
+    while error >= 1
+        error = abs(100 * ((sample(j,row) - SS)/SS));
+        j = j + 1;
+    end
+    time = sample(j,1);
+end
+
+function time = convTimeAny(temp_vec,t_vec,row)
+%Time it takes for solution to get within 1% of steady
+    SS = mean(temp_vec(end,row));
+    error = 100;
+    j = 1;
+    while error >= 1
+        error = abs(100 * ((temp_vec(j,row) - SS)/SS));
+        j = j + 1;
+    end
+    time = t_vec(j);
+end
+
+function [u] = u_xt(H,alpha,L,x,T0,n,t)
+%Infinate sum func
+    %Estimates U_xt given inital values
+u = T0 + H*x;
+%prev = 0;
+for i = 1:n
+    r = rem(i,2);
+    if r == 1
+        bn = -8*H*L ./ (pi.^2 * ((2*i)-1).^2);
+    else
+        bn = 8*H*L ./ (pi.^2 * ((2*i)-1).^2);
+    end
+    lambda = ((2*i)-1)*pi ./ (2*L);
+    %exponential = -(lambda.^2)*alpha*t
+    %u = u + bn * sin(lambda * x) * exp(-(lambda.^2)*alpha*t);
+    %prev = bn;
+    u = u + bn .* sin(lambda .* x) .* exp(-(lambda.^2)*alpha*t);
+end
+
+end

@@ -1,0 +1,32 @@
+function [startIndex,endIndex] = findCycleIndex(arry,numCycles)
+
+index = ones(numCycles,2);
+for loop = 1:numCycles
+
+while ~arry(i)
+    i = i + 1;
+end
+j= i;
+index(loop,1) = i;
+while arry(j)
+    j = j + 1;
+end
+index(loop,2)
+i = j+1;
+
+end
+
+% i2=j+1;
+% while ~Group5_Temp8(i2,4)
+%     i2 = i2 + 1;
+% end
+% j2= i2;
+% while Group5_Temp8(j2,4)
+%     j2 = j2 + 1;
+% end
+% 
+% st = floor((j + i)/2);
+% endTime = floor((j2 + i2)/2);
+
+
+end

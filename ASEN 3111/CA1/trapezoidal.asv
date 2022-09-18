@@ -1,0 +1,19 @@
+function sum = trapezoidal(funcIn, startX, endX, steps)
+%Trapizodail sum of a fuction from start to end with set amount of steps
+%   funcIn expects @functionInQuestion, startX is starting index, endX is
+%   end of intergration, steps the the total number of points to be
+%   considered.
+
+    sum = 0; %Start an accumulator
+    size = (endX-startX)/steps;
+    Y0 = 
+
+    for x = startX:size:(endX-size)
+
+        sum = sum + ((funcIn(x)+funcIn(x+size))); % Adds the 2 points togather using area of trap being b*(h1+h2)/2 but multiples are moved out.
+
+    end
+
+    sum = sum*(size/2); %Move the constant multipliers out of the loop to save speed.
+
+end

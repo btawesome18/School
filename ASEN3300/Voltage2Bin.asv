@@ -1,0 +1,20 @@
+function [binDec,binBi] = Voltage2Bin(min_voltage,max_voltage,bits,vin)
+
+%by Brian Trybus
+
+N = 2^bits;
+
+range = max_voltage-min_voltage;
+
+VperN = range/N;
+
+binDec = round((vin-min_voltage)./VperN);
+
+for i= bits:1
+    
+    binDec*10
+binBi = de2bi(binDec);
+
+end
+
+end

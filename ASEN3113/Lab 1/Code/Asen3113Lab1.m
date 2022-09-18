@@ -1,0 +1,174 @@
+% ASEN 3113 Lab 1 Matlab Code - Group 5
+% By Jarrett Bartson, Ryan Jones, Rishi Mayekar, Cannon Palmer, Brian Trybus 
+clear
+clc
+close all
+
+%load data
+load("Engine3_Temp8")
+load("Engine3_Temp9")
+load("Engine3_Temp10")
+load("Engine3_Temp11")
+load("Engine3_Temp12")
+
+load("Group5_Temp8")
+load("Group5_Temp10")
+load("Group5_Temp12")
+
+rpm60 = xlsread("Small_60rpm_150fps.xlsx");
+rpm90 = xlsread("Small_90rpm_150fps.xlsx");
+rpm114 = xlsread("Small_114rpm_150fps.xlsx");
+
+%1-Change in internal pressure [psi]
+%2-Temperature of top surface of top (cold) plate [°C]
+%3-Temperature of bottom surface of top (cold) plate [°C]
+%4-Temperature of top surface of bottom (hot) plate [°C]
+%5-Temperature of bottom surface of bottom (hot) plate [°C]
+%6-Electrical current to the heater [A]
+%7-Optical switch reading
+
+%% Temp 8 - 60 rpm
+time1 = Group5_Temp8(:,1);
+
+figure(1)
+title('Temperature Difference = 8 Degrees C')
+subplot(2,2,1)
+%plot(time1,Group5_Temp8(:,2))
+plot(1:23619,Group5_Temp8(:,2))
+ylabel('Pressure (psi)')
+title("Pressure Over Time")
+
+subplot(2,2,2)
+plot(time1,Group5_Temp8(:,6))
+hold on
+plot(time1,Group5_Temp8(:,5))
+plot(time1,Group5_Temp8(:,8))
+plot(time1,Group5_Temp8(:,7))
+ylabel('Temperature (C)')
+hold off
+title("Temperatures of Channels")
+legend("Top of Top","Bottom of Top","Top of Bottom","Bottom of Bottom")
+
+subplot(2,2,3)
+plot(time1,Group5_Temp8(:,8) - Group5_Temp8(:,5))
+title("Temperature Difference Between Top and Bottom")
+ylabel('Temperature (C)')
+xlabel('Time (s)')
+
+subplot(2,2,4)
+plot(time1,Group5_Temp8(:,4))
+title("Encoder Cycle")
+xlabel('Time (s)')
+
+% %% Temp 10 - 90 rpm
+% time2 = Group5_Temp10(:,1);
+% 
+% figure(2)
+% title('Temperature Difference = 10 Degrees C')
+% subplot(2,2,1)
+% plot(time2,Group5_Temp10(:,2))
+% ylabel('Pressure (psi)')
+% title("Pressure Over Time")
+% 
+% subplot(2,2,2)
+% plot(time2,Group5_Temp10(:,6))
+% hold on
+% plot(time2,Group5_Temp10(:,5))
+% plot(time2,Group5_Temp10(:,8))
+% plot(time2,Group5_Temp10(:,7))
+% hold off
+% ylabel('Temperature (C)')
+% title("Temperatures of Channels")
+% legend("Top of Top","Bottom of Top","Top of Bottom","Bottom of Bottom")
+% 
+% subplot(2,2,3)
+% plot(time2,Group5_Temp10(:,8) - Group5_Temp10(:,5))
+% title("Temperature Difference Between Top and Bottom")
+% ylabel('Temperature (C)')
+% xlabel('Time (s)')
+% 
+% subplot(2,2,4)
+% plot(time2,Group5_Temp10(:,4))
+% title("Encoder Cycle")
+% xlabel('Time (s)')
+% 
+% %% Temp 12 - 114 rpm
+% time3 = Group5_Temp12(:,1);
+% 
+% figure(3)
+% title('Temperature Difference = 12 Degrees C')
+% subplot(2,2,1)
+% plot(time3,Group5_Temp12(:,2))
+% ylabel('Pressure (psi)')
+% title("Pressure Over Time")
+% 
+% subplot(2,2,2)
+% plot(time3,Group5_Temp12(:,6))
+% hold on
+% plot(time3,Group5_Temp12(:,5))
+% plot(time3,Group5_Temp12(:,8))
+% plot(time3,Group5_Temp12(:,7))
+% hold off
+% title("Temperatures of Channels")
+% ylabel('Temperature (C)')
+% legend("Top of Top","Bottom of Top","Top of Bottom","Bottom of Bottom")
+% 
+% subplot(2,2,3)
+% plot(time3,Group5_Temp12(:,8) - Group5_Temp12(:,5))
+% title("Temperature Difference Between Top and Bottom")
+% ylabel('Temperature (C)')
+% xlabel('Time (s)')
+% 
+% subplot(2,2,4)
+% plot(time3,Group5_Temp12(:,4))
+% title("Encoder Cycle")
+% xlabel('Time (s)')
+
+%% P-V 60 rpm
+pistonA = 176.71; %piston head area in mm^2
+
+% Aligning time axes of solidworks data with experimental data
+    rpm60T(:,1) = 1:length(Group5_Temp8(1:end-1000,1));
+    rpm60T(:,2) = Group5_Temp8(1:end-1000,1);
+    rpm60T(:,3) = sampleAtTimes(Group5_Temp8(1:end-1000,1), rpm60(:,2), rpm60(:,3));  
+% Scaling SW data to fit Experimental data
+    rpm60S(:,3) = scaleSWdata(20000 * Group5_Temp8(1:end-1000,2) + 1000, rpm60T(:,3));
+    rpm60S(:,2) = rpm60T(1:(length(rpm60S(:,3))),2);
+    rpm60S(:,1) = 1:length(rpm60S(:,3));
+
+rpm60 = rpm60S;
+
+figure(4)
+vol60 = (rpm60(:,3)-min(rpm60(:,3))) * pistonA;
+plot(rpm60(:,2),vol60)
+title('Volume of Piston Cylinder over Time - 8C Temp Difference')
+xlabel('Time (s)')
+ylabel('Piston Volume (mm^3)')
+
+figure(5) % plotting vol (x) vs pressure (y)
+plot(vol60,Group5_Temp8(1:length(vol60),2))
+
+figure(6)
+plot(rpm60(:,2),vol60)
+hold on
+plot(rpm60(:,2),20000 * Group5_Temp8(1:length(vol60),2) + 1000)
+legend('Solidworks','Experimental')
+hold off
+
+% %% P-V 90 rpm
+% 
+% figure(6)
+% vol90 = (rpm90(:,3)-min(rpm90(:,3))) * pistonA;
+% plot(rpm60(:,2),vol90)
+% title('Volume of Piston Cylinder over Time - 10C Temp Difference')
+% xlabel('Time (s)')
+% ylabel('Piston Volume (mm^3)')
+% 
+% %% P-V 114 rpm
+% 
+% figure(7)
+% vol114 = (rpm114(:,3)-min(rpm114(:,3))) * pistonA;
+% plot(rpm60(:,2),vol114)
+% title('Volume of Piston Cylinder over Time - 12C Temp Difference')
+% xlabel('Time (s)')
+% ylabel('Piston Volume (mm^3)')
